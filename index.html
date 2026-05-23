@@ -180,21 +180,23 @@
 
     .nav__burger {
       display: none;
-      width: 32px; height: 32px;
+      width: 44px; height: 44px;
       flex-direction: column;
+      align-items: center;
       justify-content: center;
       gap: 5px;
       padding: 0;
+      margin-right: -8px; /* visually align right edge while keeping the hit area generous */
     }
     .nav__burger span {
       display: block;
-      width: 22px; height: 1px;
+      width: 22px; height: 1.5px;
       background: var(--text-primary);
       transition: transform 0.3s ease, opacity 0.3s ease;
     }
-    .nav.open .nav__burger span:nth-child(1) { transform: translateY(6px) rotate(45deg); }
+    .nav.open .nav__burger span:nth-child(1) { transform: translateY(6.5px) rotate(45deg); }
     .nav.open .nav__burger span:nth-child(2) { opacity: 0; }
-    .nav.open .nav__burger span:nth-child(3) { transform: translateY(-6px) rotate(-45deg); }
+    .nav.open .nav__burger span:nth-child(3) { transform: translateY(-6.5px) rotate(-45deg); }
 
     /* ============================================================
        4. PAGE / SECTION SCAFFOLD
@@ -641,22 +643,24 @@
       gap: clamp(2.5rem, 6vw, 5rem);
       align-items: center;
     }
-    /* Literary still-life — replaces author photo. */
+    /* Literary still-life — replaces author photo.
+       An animated window: sheer curtains parted at the center, warm interior glow,
+       faint silhouettes of a chair and lamp inside. The viewer stands outside. */
     .author__motif {
       position: relative;
       aspect-ratio: 4/5;
-      max-width: 460px;
+      max-width: 440px;
       margin: 0 auto;
       background:
-        radial-gradient(ellipse 70% 50% at 50% 35%, color-mix(in srgb, var(--accent) 14%, transparent), transparent 70%),
+        radial-gradient(ellipse 80% 70% at 50% 50%, color-mix(in srgb, var(--accent) 10%, transparent), transparent 75%),
         linear-gradient(165deg, var(--bg-elev-1), var(--bg-elev-2));
       border: 1px solid var(--hairline-strong);
       overflow: hidden;
       box-shadow: var(--shadow-frame);
       display: grid; place-items: center;
-      padding: 8% 6%;
+      padding: 4% 4%;
     }
-    /* Subtle blinds-like horizontal lines for atmosphere */
+    /* Subtle hairlines like blinds, behind the window */
     .author__motif::before {
       content: "";
       position: absolute; inset: 0;
@@ -664,22 +668,22 @@
         to bottom,
         transparent 0,
         transparent 26px,
-        color-mix(in srgb, var(--accent) 6%, transparent) 26px,
-        color-mix(in srgb, var(--accent) 6%, transparent) 27px
+        color-mix(in srgb, var(--accent) 5%, transparent) 26px,
+        color-mix(in srgb, var(--accent) 5%, transparent) 27px
       );
       pointer-events: none;
-      opacity: 0.4;
+      opacity: 0.35;
     }
     .author__motif svg {
       width: 100%;
       height: auto;
       position: relative;
       z-index: 2;
-      filter: drop-shadow(0 20px 40px rgba(0,0,0,0.4));
+      filter: drop-shadow(0 30px 60px rgba(0,0,0,0.45));
     }
     .author__motif-caption {
       position: absolute;
-      bottom: 5%; left: 0; right: 0;
+      bottom: 4%; left: 0; right: 0;
       text-align: center;
       font-family: 'Cormorant Garamond', serif;
       font-style: italic;
@@ -692,6 +696,71 @@
       content: "—";
       color: var(--accent);
       margin: 0 0.6rem;
+    }
+
+    /* ====== Window scene animations ====== */
+    /* Warm lamp pulsing softly, with an occasional flicker */
+    @keyframes lamp-pulse {
+      0%, 70%, 100% { opacity: 0.55; }
+      35%           { opacity: 0.85; }
+      82%           { opacity: 0.40; }   /* the flicker */
+      84%           { opacity: 0.75; }
+      86%           { opacity: 0.45; }
+      88%           { opacity: 0.7; }
+    }
+    .window-svg .lamp-glow  { animation: lamp-pulse 7s ease-in-out infinite; transform-origin: center; }
+    .window-svg .lamp-bulb  { animation: lamp-pulse 7s ease-in-out infinite; }
+
+    /* Whole window warmth breathing in and out */
+    @keyframes window-breathe {
+      0%, 100% { opacity: 0.92; }
+      50%      { opacity: 1; }
+    }
+    .window-svg .glass-warmth { animation: window-breathe 9s ease-in-out infinite; }
+
+    /* Sheer curtains swaying gently */
+    @keyframes curtain-sway-l {
+      0%, 100% { transform: translateX(0) skewY(0deg); }
+      50%      { transform: translateX(1.5px) skewY(-0.4deg); }
+    }
+    @keyframes curtain-sway-r {
+      0%, 100% { transform: translateX(0) skewY(0deg); }
+      50%      { transform: translateX(-1.5px) skewY(0.4deg); }
+    }
+    .window-svg .curtain-left  { transform-origin: 0 0;   animation: curtain-sway-l 11s ease-in-out infinite; }
+    .window-svg .curtain-right { transform-origin: 400px 0; animation: curtain-sway-r 11s ease-in-out infinite -3s; }
+
+    /* A figure briefly passes inside the room every so often */
+    @keyframes shadow-pass {
+      0%, 80%, 100% { transform: translateX(-40px); opacity: 0; }
+      85%           { opacity: 0.5; }
+      90%           { opacity: 0.7; }
+      95%           { transform: translateX(40px); opacity: 0; }
+    }
+    .window-svg .figure { animation: shadow-pass 18s ease-in-out infinite 6s; }
+
+    /* A rare sliver of light moves across the glass */
+    @keyframes glass-shimmer {
+      0%, 60%, 100% { transform: translateY(-150px); opacity: 0; }
+      72%           { opacity: 0.55; }
+      85%           { transform: translateY(500px); opacity: 0; }
+    }
+    .window-svg .shimmer { animation: glass-shimmer 13s ease-in-out infinite 2s; }
+
+    /* Stars twinkle outside (only visible at the top panes) */
+    @keyframes twinkle {
+      0%, 100% { opacity: 0.25; }
+      50%      { opacity: 0.9; }
+    }
+    .window-svg .star-1 { animation: twinkle 3.5s ease-in-out infinite; }
+    .window-svg .star-2 { animation: twinkle 3.5s ease-in-out infinite 1.2s; }
+    .window-svg .star-3 { animation: twinkle 3.5s ease-in-out infinite 2.4s; }
+
+    /* Respect reduced-motion preference */
+    @media (prefers-reduced-motion: reduce) {
+      .window-svg *, .window-svg *::before, .window-svg *::after {
+        animation: none !important;
+      }
     }
 
     .author__name {
@@ -1054,11 +1123,31 @@
       .slider__page { flex: 0 0 100%; min-height: 320px; }
     }
     @media (max-width: 540px) {
-      .nav { padding: 1rem 1.2rem; }
-      .nav__brand { font-size: 1.2rem; }
+      /* Tighter mobile nav so brand + toggle + burger always fit */
+      .nav { padding: 0.75rem 1rem; min-height: 64px; }
+      .nav__brand { font-size: 1.1rem; gap: 0.55rem; letter-spacing: 0.04em; }
+      .nav__brand-mark { width: 18px; height: 18px; }
+      .nav__right { gap: 0.3rem; }
+      .theme-toggle { width: 46px; height: 24px; }
+      .theme-toggle__knob { width: 18px; height: 18px; top: 2px; left: 2px; }
+      :root[data-theme="light"] .theme-toggle__knob { transform: translateX(22px); }
+      .nav__burger { width: 40px; height: 40px; }
+      .nav__links { top: 64px; }
+      main { padding-top: 64px; }
+
       .hero { padding: 2rem 1.2rem; }
       .container { padding: 0 1.2rem; }
       .synopsis { font-size: 1.1rem; padding: 1.5rem 0 1.5rem 1.2rem; }
+    }
+    @media (max-width: 380px) {
+      /* Ultra-narrow phones — keep everything from clipping */
+      .nav { padding: 0.6rem 0.85rem; }
+      .nav__brand { font-size: 1rem; gap: 0.45rem; }
+      .nav__brand-mark { width: 16px; height: 16px; }
+      .theme-toggle { width: 40px; height: 22px; }
+      .theme-toggle__knob { width: 16px; height: 16px; }
+      :root[data-theme="light"] .theme-toggle__knob { transform: translateX(18px); }
+      .nav__burger { width: 36px; height: 36px; }
     }
   </style>
 </head>
@@ -1330,135 +1419,145 @@
     <section id="author" class="page">
       <div class="container">
         <div class="author">
-          <!-- Literary still-life motif (NO author photo by request).
-               Vintage typewriter, a stack of books, lamp glow, and a manuscript page
-               emerging from the carriage — evokes the craft without showing a face. -->
-          <div class="author__motif" aria-label="Decorative literary still-life: vintage typewriter, books, and a glowing lamp">
-            <svg viewBox="0 0 400 480" xmlns="http://www.w3.org/2000/svg">
+          <!-- Animated window scene (NO author photo by request).
+               Outside looking in: warm interior glow, sheer curtains parted at center,
+               faint silhouettes of furniture, a flickering lamp, a figure that passes
+               occasionally, twinkling stars outside, and a rare sliver of light on the glass. -->
+          <div class="author__motif" aria-label="Animated illustration of a window at night with a warm interior glow">
+            <svg class="window-svg" viewBox="0 0 400 500" xmlns="http://www.w3.org/2000/svg">
               <defs>
-                <!-- Warm lamp glow -->
-                <radialGradient id="lampGlow" cx="50%" cy="50%" r="50%">
-                  <stop offset="0%"  stop-color="var(--accent)" stop-opacity="0.6"/>
-                  <stop offset="50%" stop-color="var(--accent)" stop-opacity="0.2"/>
+                <!-- Warm interior glow gradient -->
+                <radialGradient id="warmInterior" cx="50%" cy="58%" r="60%">
+                  <stop offset="0%"   stop-color="var(--accent)" stop-opacity="0.55"/>
+                  <stop offset="45%"  stop-color="var(--accent)" stop-opacity="0.22"/>
                   <stop offset="100%" stop-color="var(--accent)" stop-opacity="0"/>
                 </radialGradient>
-                <!-- Page emerging from typewriter — subtle paper tint -->
-                <linearGradient id="paper" x1="0" x2="0" y1="0" y2="1">
-                  <stop offset="0%"  stop-color="var(--text-primary)" stop-opacity="0.95"/>
-                  <stop offset="100%" stop-color="var(--text-primary)" stop-opacity="0.7"/>
+                <!-- Sheer curtain gradient -->
+                <linearGradient id="curtainGrad" x1="0" x2="1" y1="0" y2="0">
+                  <stop offset="0%"   stop-color="var(--text-primary)" stop-opacity="0.28"/>
+                  <stop offset="50%"  stop-color="var(--text-primary)" stop-opacity="0.08"/>
+                  <stop offset="100%" stop-color="var(--text-primary)" stop-opacity="0.28"/>
                 </linearGradient>
-                <!-- Subtle typewriter shading -->
-                <linearGradient id="machineShade" x1="0" x2="0" y1="0" y2="1">
-                  <stop offset="0%" stop-color="var(--text-primary)" stop-opacity="0.92"/>
-                  <stop offset="100%" stop-color="var(--text-primary)" stop-opacity="0.65"/>
+                <!-- Light sliver for rare shimmer -->
+                <linearGradient id="lightSliver" x1="0" x2="0" y1="0" y2="1">
+                  <stop offset="0%"   stop-color="var(--accent)" stop-opacity="0"/>
+                  <stop offset="50%"  stop-color="var(--accent)" stop-opacity="0.45"/>
+                  <stop offset="100%" stop-color="var(--accent)" stop-opacity="0"/>
                 </linearGradient>
+                <!-- Clip-path so curtains and shimmer only show inside the glass -->
+                <clipPath id="glassArea">
+                  <rect x="58" y="48" width="284" height="404"/>
+                </clipPath>
               </defs>
 
-              <!-- Atmospheric lamp glow behind -->
-              <circle cx="305" cy="135" r="115" fill="url(#lampGlow)"/>
+              <!-- Top architectural sill cap -->
+              <rect x="28" y="20" width="344" height="14" fill="var(--accent)" opacity="0.45"
+                    stroke="var(--accent)" stroke-width="1"/>
 
-              <!-- ===== LAMP ===== -->
-              <!-- Lamp shade -->
-              <path d="M 270 80 L 340 80 L 330 130 L 280 130 Z"
-                    fill="var(--accent)" opacity="0.75"/>
-              <path d="M 270 80 L 340 80 L 330 130 L 280 130 Z"
-                    fill="none" stroke="var(--accent)" stroke-width="1.2" opacity="0.9"/>
-              <!-- Lamp neck/post -->
-              <line x1="305" y1="130" x2="305" y2="200" stroke="var(--text-primary)" stroke-width="1.5" opacity="0.7"/>
-              <!-- Lamp base -->
-              <ellipse cx="305" cy="202" rx="22" ry="4" fill="var(--text-primary)" opacity="0.6"/>
-              <!-- Tiny inside-shade highlight (the bulb glow) -->
-              <ellipse cx="305" cy="110" rx="18" ry="8" fill="var(--accent)" opacity="0.5"/>
+              <!-- Outer window casing -->
+              <rect x="40" y="34" width="320" height="430" fill="none"
+                    stroke="var(--accent)" stroke-width="2.5"/>
 
-              <!-- ===== STACK OF BOOKS (left side) ===== -->
-              <!-- Bottom book -->
-              <rect x="50"  y="265" width="135" height="18" fill="var(--accent)" opacity="0.55" stroke="var(--accent)" stroke-width="1"/>
-              <rect x="50"  y="265" width="6" height="18" fill="var(--bg-base)" opacity="0.3"/>
-              <line x1="65" y1="274" x2="180" y2="274" stroke="var(--bg-base)" stroke-width="0.5" opacity="0.5"/>
-              <!-- Middle book -->
-              <rect x="62"  y="248" width="118" height="17" fill="var(--text-primary)" opacity="0.7" stroke="var(--text-primary)" stroke-width="0.8"/>
-              <rect x="62"  y="248" width="5" height="17" fill="var(--accent)" opacity="0.7"/>
-              <!-- Top book — slightly askew -->
-              <g transform="rotate(-2 130 233)">
-                <rect x="70"  y="225" width="120" height="18" fill="var(--accent)" opacity="0.4" stroke="var(--accent)" stroke-width="1"/>
-                <rect x="70"  y="225" width="5" height="18" fill="var(--accent)" opacity="0.9"/>
-                <text x="92" y="237" font-family="Cormorant Garamond, serif" font-style="italic" font-size="9"
-                      fill="var(--accent)" opacity="0.9" letter-spacing="0.05em">WINDOWS</text>
+              <!-- Inner sash frame -->
+              <rect x="55" y="49" width="290" height="400" fill="var(--bg-frame)"
+                    stroke="var(--accent)" stroke-width="1"/>
+
+              <!-- ===== GLASS / INTERIOR (clipped) ===== -->
+              <g clip-path="url(#glassArea)">
+                <!-- Base warmth wash -->
+                <rect class="glass-warmth" x="58" y="48" width="284" height="404" fill="url(#warmInterior)"/>
+
+                <!-- Stars visible in upper panes (twinkle) -->
+                <circle class="star-1" cx="95"  cy="85"  r="1.2" fill="var(--accent)"/>
+                <circle class="star-2" cx="305" cy="95"  r="1"   fill="var(--accent)"/>
+                <circle class="star-3" cx="270" cy="120" r="0.9" fill="var(--accent)"/>
+                <circle class="star-1" cx="125" cy="135" r="0.7" fill="var(--accent)" opacity="0.6"/>
+                <circle class="star-2" cx="320" cy="155" r="0.8" fill="var(--accent)" opacity="0.7"/>
+
+                <!-- Interior silhouettes: chair + side table + lamp stand -->
+                <g class="interior-shapes" opacity="0.4">
+                  <!-- Wing-back chair silhouette (right side) -->
+                  <path d="M 220 360 L 220 270
+                           Q 220 245 245 245
+                           L 290 245
+                           Q 305 245 305 260
+                           L 305 360 Z"
+                        fill="var(--bg-frame)" opacity="0.95"/>
+                  <!-- Chair legs -->
+                  <rect x="222" y="360" width="3" height="35" fill="var(--bg-frame)" opacity="0.7"/>
+                  <rect x="302" y="360" width="3" height="35" fill="var(--bg-frame)" opacity="0.7"/>
+
+                  <!-- Side table (left of chair) -->
+                  <rect x="135" y="325" width="58" height="40" fill="var(--bg-frame)" opacity="0.85"/>
+                  <!-- Table legs -->
+                  <rect x="138" y="365" width="3" height="30" fill="var(--bg-frame)" opacity="0.7"/>
+                  <rect x="187" y="365" width="3" height="30" fill="var(--bg-frame)" opacity="0.7"/>
+
+                  <!-- Lamp on the table — stand and shade -->
+                  <rect x="163" y="282" width="2.5" height="43" fill="var(--bg-frame)" opacity="0.9"/>
+                  <path d="M 148 268 L 180 268 L 175 285 L 153 285 Z"
+                        fill="var(--bg-frame)" opacity="0.9"/>
+                  <!-- Floor line -->
+                  <line x1="58" y1="395" x2="342" y2="395"
+                        stroke="var(--accent)" stroke-width="0.5" opacity="0.4"/>
+                </g>
+
+                <!-- Warm lamp glow + bulb -->
+                <ellipse class="lamp-glow" cx="164" cy="278" rx="45" ry="18"
+                         fill="var(--accent)" opacity="0.55"/>
+                <ellipse class="lamp-glow" cx="164" cy="278" rx="28" ry="11"
+                         fill="var(--accent)" opacity="0.75"/>
+                <circle  class="lamp-bulb"  cx="164" cy="278" r="5"
+                         fill="var(--accent)" opacity="0.95"/>
+
+                <!-- Figure that passes by occasionally (silhouette of a person walking) -->
+                <g class="figure" opacity="0">
+                  <ellipse cx="200" cy="260" rx="9" ry="11" fill="var(--bg-frame)" opacity="0.95"/>
+                  <path d="M 191 271 L 209 271 L 213 340 L 187 340 Z"
+                        fill="var(--bg-frame)" opacity="0.95"/>
+                </g>
+
+                <!-- Glass shimmer (rare moving light sliver) -->
+                <rect class="shimmer" x="58" y="-150" width="284" height="80"
+                      fill="url(#lightSliver)" opacity="0"/>
+
+                <!-- Curtains - drawn on the left and right, parted at center -->
+                <path class="curtain curtain-left"
+                      d="M 58 48
+                         Q 70 110 80 200
+                         Q 88 260 95 320
+                         Q 102 390 110 452
+                         L 58 452 Z"
+                      fill="url(#curtainGrad)" opacity="0.95"/>
+                <path class="curtain curtain-right"
+                      d="M 342 48
+                         Q 330 110 320 200
+                         Q 312 260 305 320
+                         Q 298 390 290 452
+                         L 342 452 Z"
+                      fill="url(#curtainGrad)" opacity="0.95"/>
+
+                <!-- Vertical fold lines on the curtains for texture -->
+                <g opacity="0.35" stroke="var(--text-primary)" stroke-width="0.5" fill="none">
+                  <path class="curtain-left"  d="M 70  50 Q 73  220 80  380 Q 85  430 90  452"/>
+                  <path class="curtain-left"  d="M 82  50 Q 85  220 92  380 Q 97  430 99  452"/>
+                  <path class="curtain-left"  d="M 95  50 Q 98  220 104 380 Q 108 430 109 452"/>
+                  <path class="curtain-right" d="M 330 50 Q 327 220 320 380 Q 315 430 310 452"/>
+                  <path class="curtain-right" d="M 318 50 Q 315 220 308 380 Q 303 430 301 452"/>
+                  <path class="curtain-right" d="M 305 50 Q 302 220 296 380 Q 292 430 291 452"/>
+                </g>
               </g>
 
-              <!-- ===== TYPEWRITER ===== -->
-              <!-- Paper emerging from the carriage -->
-              <g>
-                <rect x="125" y="290" width="115" height="55" fill="url(#paper)" stroke="var(--text-secondary)" stroke-width="0.5"/>
-                <!-- Lines of text on the page -->
-                <line x1="135" y1="302" x2="225" y2="302" stroke="var(--bg-base)" stroke-width="1" opacity="0.5"/>
-                <line x1="135" y1="310" x2="220" y2="310" stroke="var(--bg-base)" stroke-width="1" opacity="0.5"/>
-                <line x1="135" y1="318" x2="215" y2="318" stroke="var(--bg-base)" stroke-width="1" opacity="0.5"/>
-                <line x1="135" y1="326" x2="200" y2="326" stroke="var(--bg-base)" stroke-width="1" opacity="0.5"/>
-              </g>
+              <!-- Mullions (window grid dividers) - drawn over the glass -->
+              <line x1="200" y1="49" x2="200" y2="449" stroke="var(--accent)" stroke-width="1.5"/>
+              <line x1="55"  y1="249" x2="345" y2="249" stroke="var(--accent)" stroke-width="1.5"/>
 
-              <!-- Typewriter top — carriage -->
-              <rect x="100" y="340" width="200" height="22" rx="2" fill="url(#machineShade)" stroke="var(--text-primary)" stroke-width="1"/>
-              <!-- Knobs on carriage -->
-              <circle cx="105" cy="351" r="6" fill="var(--text-primary)" opacity="0.85"/>
-              <circle cx="295" cy="351" r="6" fill="var(--text-primary)" opacity="0.85"/>
-              <circle cx="105" cy="351" r="2" fill="var(--accent)"/>
-              <circle cx="295" cy="351" r="2" fill="var(--accent)"/>
+              <!-- Window corner ornaments — tiny accent squares -->
+              <rect x="195" y="244" width="10" height="10" fill="var(--accent)" opacity="0.8"/>
 
-              <!-- Typewriter body — main block -->
-              <path d="M 85 362 L 315 362 L 305 415 L 95 415 Z"
-                    fill="url(#machineShade)" stroke="var(--text-primary)" stroke-width="1"/>
-              <!-- Ribbon strip -->
-              <rect x="115" y="368" width="170" height="8" fill="var(--accent)" opacity="0.55"/>
-
-              <!-- Keys — three rows of small circles -->
-              <g fill="var(--bg-base)" opacity="0.9">
-                <!-- Row 1 -->
-                <circle cx="125" cy="386" r="3.2"/><circle cx="138" cy="386" r="3.2"/><circle cx="151" cy="386" r="3.2"/>
-                <circle cx="164" cy="386" r="3.2"/><circle cx="177" cy="386" r="3.2"/><circle cx="190" cy="386" r="3.2"/>
-                <circle cx="203" cy="386" r="3.2"/><circle cx="216" cy="386" r="3.2"/><circle cx="229" cy="386" r="3.2"/>
-                <circle cx="242" cy="386" r="3.2"/><circle cx="255" cy="386" r="3.2"/><circle cx="268" cy="386" r="3.2"/>
-                <!-- Row 2 -->
-                <circle cx="131" cy="397" r="3.2"/><circle cx="144" cy="397" r="3.2"/><circle cx="157" cy="397" r="3.2"/>
-                <circle cx="170" cy="397" r="3.2"/><circle cx="183" cy="397" r="3.2"/><circle cx="196" cy="397" r="3.2"/>
-                <circle cx="209" cy="397" r="3.2"/><circle cx="222" cy="397" r="3.2"/><circle cx="235" cy="397" r="3.2"/>
-                <circle cx="248" cy="397" r="3.2"/><circle cx="261" cy="397" r="3.2"/>
-                <!-- Row 3 -->
-                <circle cx="138" cy="408" r="3.2"/><circle cx="151" cy="408" r="3.2"/><circle cx="164" cy="408" r="3.2"/>
-                <circle cx="177" cy="408" r="3.2"/><circle cx="190" cy="408" r="3.2"/><circle cx="203" cy="408" r="3.2"/>
-                <circle cx="216" cy="408" r="3.2"/><circle cx="229" cy="408" r="3.2"/><circle cx="242" cy="408" r="3.2"/>
-                <circle cx="255" cy="408" r="3.2"/>
-              </g>
-
-              <!-- Highlight rim on keys for accent -->
-              <g fill="var(--accent)" opacity="0.4">
-                <circle cx="125" cy="386" r="1"/><circle cx="190" cy="386" r="1"/><circle cx="255" cy="386" r="1"/>
-                <circle cx="157" cy="397" r="1"/><circle cx="222" cy="397" r="1"/>
-                <circle cx="190" cy="408" r="1"/><circle cx="255" cy="408" r="1"/>
-              </g>
-
-              <!-- Desk surface shadow under typewriter -->
-              <ellipse cx="200" cy="420" rx="135" ry="6" fill="var(--bg-base)" opacity="0.4"/>
-
-              <!-- ===== INK QUILL (top-left corner accent) ===== -->
-              <g transform="translate(50 70) rotate(-30)" opacity="0.6">
-                <path d="M 0 0 Q 5 20, 12 45 Q 18 65, 22 90" stroke="var(--accent)" stroke-width="1" fill="none"/>
-                <path d="M 22 90 L 26 95 L 30 90 L 28 86 Z" fill="var(--accent)"/>
-                <!-- Feather barbs -->
-                <path d="M 4 8 Q 0 12, -2 15"  stroke="var(--accent)" stroke-width="0.6" fill="none"/>
-                <path d="M 7 18 Q 2 22, 0 26"  stroke="var(--accent)" stroke-width="0.6" fill="none"/>
-                <path d="M 10 28 Q 5 32, 3 36" stroke="var(--accent)" stroke-width="0.6" fill="none"/>
-                <path d="M 13 40 Q 8 44, 6 48" stroke="var(--accent)" stroke-width="0.6" fill="none"/>
-              </g>
-
-              <!-- ===== AMBIENT DUST SPECKS (in lamp light) ===== -->
-              <g fill="var(--accent)" opacity="0.6">
-                <circle cx="260" cy="155" r="0.8"/>
-                <circle cx="285" cy="180" r="0.6"/>
-                <circle cx="320" cy="170" r="0.7"/>
-                <circle cx="275" cy="200" r="0.5"/>
-                <circle cx="340" cy="195" r="0.6"/>
-              </g>
+              <!-- Bottom sill - architectural ledge -->
+              <rect x="28" y="464" width="344" height="18" fill="var(--accent)" opacity="0.45"
+                    stroke="var(--accent)" stroke-width="1"/>
             </svg>
 
             <div class="author__motif-caption">S. E.</div>
@@ -1709,6 +1808,7 @@
 
       // Close mobile menu after navigation, then scroll up
       nav.classList.remove('open');
+      document.body.style.overflow = '';
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
@@ -1745,8 +1845,19 @@
 
 
     /* ---------- 3. Mobile Menu Burger ---------- */
-    document.getElementById('navBurger').addEventListener('click', () => {
+    const burger = document.getElementById('navBurger');
+    burger.addEventListener('click', (e) => {
+      e.stopPropagation();
       nav.classList.toggle('open');
+      // Prevent body scroll while drawer is open
+      document.body.style.overflow = nav.classList.contains('open') ? 'hidden' : '';
+    });
+    // Close the drawer when tapping anywhere outside the nav
+    document.addEventListener('click', (e) => {
+      if (nav.classList.contains('open') && !nav.contains(e.target)) {
+        nav.classList.remove('open');
+        document.body.style.overflow = '';
+      }
     });
 
 
