@@ -1,0 +1,1582 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Skye Elliott — Author of "Windows"</title>
+  <meta name="description" content="The official site of author Skye Elliott — Windows: a novel of obsession, observation, and the secrets kept on the other side of the glass." />
+
+  <!-- Typography: Cormorant Garamond for literary elegance, DM Sans for clean UI -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+
+  <style>
+    /* ============================================================
+       1. THEME VARIABLES — Dark (default) + Light overrides
+       ============================================================ */
+    :root[data-theme="dark"] {
+      --bg-base:        #0a0a0d;
+      --bg-elev-1:      #131318;
+      --bg-elev-2:      #1c1c23;
+      --bg-frame:       #08080b;
+      --text-primary:   #ede5d5;
+      --text-secondary: #a59c8b;
+      --text-muted:     #6b6557;
+      --accent:         #c89b6a;   /* warm amber — window light at night */
+      --accent-soft:    #d4b48a;
+      --accent-deep:    #8a6440;
+      --hairline:       rgba(237, 229, 213, 0.08);
+      --hairline-strong:rgba(237, 229, 213, 0.18);
+      --shadow-deep:    0 30px 80px -20px rgba(0,0,0,0.7);
+      --shadow-frame:   0 0 0 1px var(--hairline), 0 40px 90px -30px rgba(0,0,0,0.9);
+      --glow:           radial-gradient(ellipse at center, rgba(200,155,106,0.18) 0%, rgba(200,155,106,0) 70%);
+      --grain-opacity:  0.05;
+    }
+    :root[data-theme="light"] {
+      --bg-base:        #f4efe5;
+      --bg-elev-1:      #ebe5d8;
+      --bg-elev-2:      #e1d9c8;
+      --bg-frame:       #efe8d8;
+      --text-primary:   #1f1a14;
+      --text-secondary: #5a4f3f;
+      --text-muted:     #8a7e6b;
+      --accent:         #7a3a2a;   /* deep burgundy in daylight */
+      --accent-soft:    #9c5a48;
+      --accent-deep:    #4e2418;
+      --hairline:       rgba(31, 26, 20, 0.10);
+      --hairline-strong:rgba(31, 26, 20, 0.22);
+      --shadow-deep:    0 30px 70px -25px rgba(50, 30, 15, 0.30);
+      --shadow-frame:   0 0 0 1px var(--hairline), 0 30px 70px -25px rgba(50, 30, 15, 0.25);
+      --glow:           radial-gradient(ellipse at center, rgba(122,58,42,0.10) 0%, rgba(122,58,42,0) 70%);
+      --grain-opacity:  0.03;
+    }
+
+    /* ============================================================
+       2. BASE / RESET
+       ============================================================ */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'DM Sans', system-ui, sans-serif;
+      background-color: var(--bg-base);
+      color: var(--text-primary);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+      transition: background-color 0.5s ease, color 0.5s ease;
+      position: relative;
+      min-height: 100vh;
+    }
+    /* Subtle film-grain texture — adds depth in both themes */
+    body::before {
+      content: "";
+      position: fixed; inset: 0;
+      pointer-events: none;
+      z-index: 9999;
+      opacity: var(--grain-opacity);
+      background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+      mix-blend-mode: overlay;
+    }
+    img { max-width: 100%; display: block; }
+    button { font: inherit; cursor: pointer; border: none; background: none; color: inherit; }
+    a { color: inherit; text-decoration: none; }
+
+    h1, h2, h3, h4 {
+      font-family: 'Cormorant Garamond', serif;
+      font-weight: 400;
+      line-height: 1.1;
+      letter-spacing: -0.01em;
+    }
+
+    /* ============================================================
+       3. NAVIGATION
+       ============================================================ */
+    .nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      padding: 1.25rem clamp(1.5rem, 4vw, 3.5rem);
+      background: color-mix(in srgb, var(--bg-base) 85%, transparent);
+      backdrop-filter: blur(20px) saturate(140%);
+      -webkit-backdrop-filter: blur(20px) saturate(140%);
+      border-bottom: 1px solid var(--hairline);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      transition: background-color 0.5s ease, border-color 0.5s ease;
+    }
+    .nav__brand {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.5rem;
+      font-weight: 500;
+      letter-spacing: 0.05em;
+      display: flex; align-items: center; gap: 0.7rem;
+    }
+    .nav__brand-mark {
+      width: 22px; height: 22px;
+      border: 1px solid var(--accent);
+      display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr;
+    }
+    .nav__brand-mark span {
+      border: 0.5px solid var(--accent);
+      background: linear-gradient(135deg, transparent, var(--accent) 200%);
+      opacity: 0.6;
+    }
+    .nav__brand-mark span:nth-child(1) { opacity: 0.9; }
+    .nav__brand-mark span:nth-child(4) { opacity: 0.3; }
+
+    .nav__links {
+      display: flex;
+      gap: clamp(1rem, 2.5vw, 2.5rem);
+      list-style: none;
+    }
+    .nav__link {
+      font-size: 0.78rem;
+      font-weight: 500;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--text-secondary);
+      padding: 0.4rem 0;
+      position: relative;
+      transition: color 0.3s ease;
+    }
+    .nav__link::after {
+      content: "";
+      position: absolute;
+      bottom: 0; left: 50%;
+      transform: translateX(-50%);
+      width: 0; height: 1px;
+      background: var(--accent);
+      transition: width 0.35s ease;
+    }
+    .nav__link:hover { color: var(--text-primary); }
+    .nav__link.active { color: var(--accent); }
+    .nav__link.active::after { width: 100%; }
+
+    .nav__right { display: flex; align-items: center; gap: 1rem; }
+
+    /* Theme toggle — designed as a tiny window switch */
+    .theme-toggle {
+      width: 56px; height: 28px;
+      background: var(--bg-elev-2);
+      border: 1px solid var(--hairline-strong);
+      border-radius: 999px;
+      position: relative;
+      transition: background 0.4s ease, border-color 0.4s ease;
+    }
+    .theme-toggle__knob {
+      position: absolute;
+      top: 2px; left: 2px;
+      width: 22px; height: 22px;
+      border-radius: 50%;
+      background: var(--accent);
+      transition: transform 0.45s cubic-bezier(.6,-0.05,.3,1.3), background 0.4s ease;
+      box-shadow: 0 0 12px var(--accent);
+    }
+    :root[data-theme="light"] .theme-toggle__knob { transform: translateX(28px); }
+
+    .nav__burger {
+      display: none;
+      width: 32px; height: 32px;
+      flex-direction: column;
+      justify-content: center;
+      gap: 5px;
+      padding: 0;
+    }
+    .nav__burger span {
+      display: block;
+      width: 22px; height: 1px;
+      background: var(--text-primary);
+      transition: transform 0.3s ease, opacity 0.3s ease;
+    }
+    .nav.open .nav__burger span:nth-child(1) { transform: translateY(6px) rotate(45deg); }
+    .nav.open .nav__burger span:nth-child(2) { opacity: 0; }
+    .nav.open .nav__burger span:nth-child(3) { transform: translateY(-6px) rotate(-45deg); }
+
+    /* ============================================================
+       4. PAGE / SECTION SCAFFOLD
+       ============================================================ */
+    main { padding-top: 80px; }
+    .page { display: none; animation: pageFade 0.7s cubic-bezier(.2,.6,.2,1) both; }
+    .page.active { display: block; }
+    @keyframes pageFade {
+      from { opacity: 0; transform: translateY(14px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .container {
+      max-width: 1240px;
+      margin: 0 auto;
+      padding: 0 clamp(1.5rem, 4vw, 3.5rem);
+    }
+    .section-label {
+      font-size: 0.7rem;
+      letter-spacing: 0.32em;
+      text-transform: uppercase;
+      color: var(--accent);
+      font-weight: 500;
+      margin-bottom: 1.2rem;
+      display: inline-flex; align-items: center; gap: 0.8rem;
+    }
+    .section-label::before {
+      content: "";
+      width: 36px; height: 1px;
+      background: var(--accent);
+      display: inline-block;
+    }
+
+    /* ============================================================
+       5. HERO (HOME)
+       ============================================================ */
+    .hero {
+      min-height: calc(100vh - 80px);
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      align-items: center;
+      gap: clamp(2rem, 5vw, 5rem);
+      padding: clamp(3rem, 7vw, 5rem) clamp(1.5rem, 4vw, 3.5rem);
+      max-width: 1340px;
+      margin: 0 auto;
+      position: relative;
+    }
+    /* Atmospheric glow behind hero */
+    .hero::before {
+      content: "";
+      position: absolute;
+      top: 20%; right: 10%;
+      width: 600px; height: 600px;
+      background: var(--glow);
+      pointer-events: none;
+      z-index: 0;
+    }
+    .hero__text { position: relative; z-index: 2; }
+    .hero__eyebrow {
+      font-size: 0.72rem;
+      letter-spacing: 0.4em;
+      text-transform: uppercase;
+      color: var(--text-secondary);
+      margin-bottom: 1.5rem;
+      display: flex; align-items: center; gap: 0.8rem;
+    }
+    .hero__eyebrow::before {
+      content: ""; width: 40px; height: 1px; background: var(--accent);
+    }
+    .hero__title {
+      font-size: clamp(3.5rem, 8vw, 7.5rem);
+      font-weight: 300;
+      line-height: 0.95;
+      margin-bottom: 1.8rem;
+      letter-spacing: -0.03em;
+    }
+    .hero__title em {
+      font-style: italic;
+      font-weight: 400;
+      color: var(--accent);
+      display: block;
+    }
+    .hero__tagline {
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-size: clamp(1.15rem, 1.8vw, 1.4rem);
+      color: var(--text-secondary);
+      max-width: 480px;
+      margin-bottom: 2.5rem;
+      line-height: 1.5;
+    }
+    .hero__cta-row { display: flex; gap: 1rem; flex-wrap: wrap; }
+
+    /* Button system */
+    .btn {
+      display: inline-flex; align-items: center; gap: 0.7rem;
+      padding: 0.95rem 1.7rem;
+      font-size: 0.78rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      font-weight: 500;
+      border: 1px solid var(--hairline-strong);
+      background: transparent;
+      color: var(--text-primary);
+      transition: all 0.35s ease;
+      position: relative;
+      overflow: hidden;
+    }
+    .btn::before {
+      content: "";
+      position: absolute; inset: 0;
+      background: var(--accent);
+      transform: translateY(101%);
+      transition: transform 0.4s cubic-bezier(.6,0,.3,1);
+      z-index: -1;
+    }
+    .btn:hover { color: var(--bg-base); border-color: var(--accent); }
+    .btn:hover::before { transform: translateY(0); }
+    .btn--primary {
+      background: var(--accent);
+      color: var(--bg-base);
+      border-color: var(--accent);
+    }
+    .btn--primary::before { background: var(--accent-deep); }
+    .btn--primary:hover { color: #fff; }
+    .btn--disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+      pointer-events: none;
+    }
+
+    /* Hero book cover — framed like a window */
+    .hero__cover {
+      position: relative;
+      justify-self: center;
+      max-width: 420px;
+      z-index: 2;
+    }
+    .cover-frame {
+      position: relative;
+      padding: 18px;
+      background: var(--bg-elev-1);
+      border: 1px solid var(--hairline-strong);
+      box-shadow: var(--shadow-frame);
+    }
+    .cover-frame::before, .cover-frame::after {
+      content: "";
+      position: absolute;
+      background: var(--accent);
+    }
+    /* L-shaped corner marks */
+    .cover-frame::before { top: -1px; left: -1px; width: 24px; height: 1px; }
+    .cover-frame::after  { top: -1px; left: -1px; width: 1px; height: 24px; }
+    .cover-frame__corner {
+      position: absolute;
+      width: 24px; height: 24px;
+      border: solid var(--accent);
+      border-width: 0;
+    }
+    .cover-frame__corner.tr { top: -1px; right: -1px; border-top-width: 1px; border-right-width: 1px; }
+    .cover-frame__corner.bl { bottom: -1px; left: -1px; border-bottom-width: 1px; border-left-width: 1px; }
+    .cover-frame__corner.br { bottom: -1px; right: -1px; border-bottom-width: 1px; border-right-width: 1px; }
+
+    .cover-frame img {
+      width: 100%;
+      display: block;
+      filter: contrast(1.05) saturate(0.95);
+    }
+    /* Placeholder shown if image fails to load */
+    .cover-placeholder {
+      aspect-ratio: 2/3;
+      width: 100%;
+      background:
+        linear-gradient(135deg, var(--bg-elev-2), var(--bg-frame)),
+        var(--bg-elev-1);
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      padding: 2rem; text-align: center;
+      gap: 1rem;
+    }
+    .cover-placeholder__title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 3rem; font-style: italic;
+      color: var(--accent);
+    }
+    .cover-placeholder__author {
+      font-size: 0.7rem; letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--text-secondary);
+    }
+
+    /* ============================================================
+       6. "TAKE A LOOK INSIDE" SLIDER
+       ============================================================ */
+    .slider-section {
+      padding: clamp(4rem, 8vw, 7rem) 0;
+      position: relative;
+    }
+    .slider-section__header {
+      display: flex; align-items: flex-end; justify-content: space-between;
+      flex-wrap: wrap; gap: 1.5rem;
+      margin-bottom: 3rem;
+    }
+    .slider-section__title {
+      font-size: clamp(2rem, 4vw, 3.2rem);
+      max-width: 600px;
+    }
+    .slider {
+      position: relative;
+      overflow: hidden;
+      border-top: 1px solid var(--hairline);
+      border-bottom: 1px solid var(--hairline);
+      padding: 3rem 0;
+    }
+    .slider__track {
+      display: flex;
+      transition: transform 0.7s cubic-bezier(.5,0,.2,1);
+      gap: 2rem;
+      padding: 0 clamp(1.5rem, 4vw, 3.5rem);
+    }
+    .slider__page {
+      flex: 0 0 clamp(280px, 35vw, 420px);
+      aspect-ratio: 3/4;
+      background: var(--bg-elev-1);
+      border: 1px solid var(--hairline);
+      padding: clamp(1.8rem, 3vw, 2.8rem);
+      display: flex; flex-direction: column; justify-content: space-between;
+      position: relative;
+      box-shadow: var(--shadow-deep);
+      transition: transform 0.5s ease;
+    }
+    .slider__page:hover { transform: translateY(-4px); }
+    .slider__page-num {
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-size: 0.9rem;
+      color: var(--accent);
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+    }
+    .slider__page-body {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(1.05rem, 1.5vw, 1.25rem);
+      line-height: 1.55;
+      color: var(--text-primary);
+      font-style: italic;
+    }
+    .slider__page-body::first-letter {
+      font-size: 3.2em; float: left;
+      line-height: 0.9; padding-right: 0.1em;
+      color: var(--accent); font-weight: 500;
+      font-style: normal;
+    }
+    .slider__page-foot {
+      font-size: 0.7rem; letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+    .slider__controls {
+      display: flex; gap: 0.8rem;
+      margin-top: 2.5rem;
+      padding: 0 clamp(1.5rem, 4vw, 3.5rem);
+      justify-content: flex-end;
+      align-items: center;
+    }
+    .slider__btn {
+      width: 48px; height: 48px;
+      border: 1px solid var(--hairline-strong);
+      display: grid; place-items: center;
+      transition: all 0.3s ease;
+    }
+    .slider__btn:hover { background: var(--accent); color: var(--bg-base); border-color: var(--accent); }
+    .slider__btn:disabled { opacity: 0.3; cursor: not-allowed; }
+    .slider__counter {
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-size: 1.1rem;
+      color: var(--text-secondary);
+      margin: 0 1rem;
+      letter-spacing: 0.1em;
+    }
+
+    /* ============================================================
+       7. THE BOOK PAGE
+       ============================================================ */
+    .book-hero {
+      display: grid;
+      grid-template-columns: 0.85fr 1.15fr;
+      gap: clamp(2.5rem, 6vw, 5rem);
+      padding: clamp(4rem, 8vw, 6rem) 0;
+      align-items: start;
+    }
+    .book-hero__cover { position: sticky; top: 110px; max-width: 380px; }
+    .book-hero__title {
+      font-size: clamp(3rem, 6vw, 5rem);
+      margin-bottom: 0.5rem;
+      font-style: italic;
+      font-weight: 400;
+    }
+    .book-hero__sub {
+      font-size: 0.78rem; letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--text-secondary);
+      margin-bottom: 2.5rem;
+    }
+    .book-meta {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 1.5rem;
+      padding: 1.8rem 0;
+      border-top: 1px solid var(--hairline);
+      border-bottom: 1px solid var(--hairline);
+      margin-bottom: 2.5rem;
+    }
+    .book-meta__item-label {
+      font-size: 0.65rem; letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 0.4rem;
+    }
+    .book-meta__item-value {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.15rem;
+      color: var(--text-primary);
+    }
+    .synopsis {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(1.3rem, 2vw, 1.7rem);
+      line-height: 1.5;
+      color: var(--text-primary);
+      font-style: italic;
+      padding: 2.5rem 0 2.5rem 2rem;
+      border-left: 2px solid var(--accent);
+      margin-bottom: 2.5rem;
+      position: relative;
+    }
+    .synopsis::before {
+      content: "“";
+      position: absolute;
+      top: -1rem; left: 1rem;
+      font-size: 5rem;
+      color: var(--accent);
+      font-family: 'Cormorant Garamond', serif;
+      line-height: 1;
+      opacity: 0.5;
+    }
+    .purchase-block { margin-top: 2.5rem; }
+    .purchase-block__label {
+      font-size: 0.7rem; letter-spacing: 0.32em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 1.2rem;
+    }
+    .purchase-grid {
+      display: flex; flex-wrap: wrap;
+      gap: 0.85rem;
+    }
+
+    /* ============================================================
+       8. AUTHOR PAGE
+       ============================================================ */
+    .author {
+      padding: clamp(4rem, 8vw, 7rem) 0;
+      display: grid;
+      grid-template-columns: 0.9fr 1.1fr;
+      gap: clamp(2.5rem, 6vw, 5rem);
+      align-items: center;
+    }
+    /* Abstract window-pane motif — replaces author photo */
+    .author__motif {
+      position: relative;
+      aspect-ratio: 3/4;
+      max-width: 420px;
+      margin: 0 auto;
+      background: linear-gradient(135deg, var(--bg-elev-1), var(--bg-elev-2));
+      border: 1px solid var(--hairline-strong);
+      overflow: hidden;
+      box-shadow: var(--shadow-frame);
+    }
+    .author__motif::before {
+      content: "";
+      position: absolute; inset: 0;
+      background:
+        radial-gradient(ellipse 80% 60% at 50% 110%, color-mix(in srgb, var(--accent) 35%, transparent), transparent 70%),
+        radial-gradient(ellipse 60% 40% at 50% 0%, color-mix(in srgb, var(--accent) 18%, transparent), transparent 70%);
+    }
+    .author__window {
+      position: absolute;
+      inset: 15%;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      grid-template-rows: 1.2fr 1fr;
+      gap: 14px;
+      padding: 14px;
+      background: color-mix(in srgb, var(--bg-frame) 70%, transparent);
+      border: 1px solid var(--accent);
+    }
+    .author__window-pane {
+      background: linear-gradient(
+        160deg,
+        color-mix(in srgb, var(--accent) 18%, transparent) 0%,
+        color-mix(in srgb, var(--accent) 4%, transparent) 50%,
+        transparent 100%
+      );
+      border: 0.5px solid color-mix(in srgb, var(--accent) 50%, transparent);
+      position: relative;
+      overflow: hidden;
+    }
+    /* Animated light sliver */
+    .author__window-pane::after {
+      content: "";
+      position: absolute;
+      top: -50%; left: -50%;
+      width: 200%; height: 50%;
+      background: linear-gradient(to bottom,
+        transparent,
+        color-mix(in srgb, var(--accent) 35%, transparent),
+        transparent);
+      transform: rotate(35deg);
+      animation: shimmer 6s ease-in-out infinite;
+    }
+    .author__window-pane:nth-child(2)::after { animation-delay: 1.5s; }
+    .author__window-pane:nth-child(3)::after { animation-delay: 3s; }
+    .author__window-pane:nth-child(4)::after { animation-delay: 4.5s; }
+    @keyframes shimmer {
+      0%, 100% { transform: translateY(0) rotate(35deg); opacity: 0; }
+      50%      { transform: translateY(300%) rotate(35deg); opacity: 1; }
+    }
+    .author__signature {
+      position: absolute;
+      bottom: 4%; left: 0; right: 0;
+      text-align: center;
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-size: 1.6rem;
+      color: var(--accent);
+      letter-spacing: 0.06em;
+      z-index: 2;
+    }
+
+    .author__name {
+      font-size: clamp(3rem, 5.5vw, 4.5rem);
+      margin-bottom: 0.5rem;
+    }
+    .author__role {
+      font-size: 0.75rem; letter-spacing: 0.32em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 2rem;
+    }
+    .author__bio {
+      font-size: 1.05rem;
+      line-height: 1.85;
+      color: var(--text-secondary);
+      max-width: 580px;
+    }
+    .author__bio p + p { margin-top: 1.2rem; }
+    .author__bio p::first-letter { color: var(--accent); }
+
+    /* ============================================================
+       9. REVIEWS PAGE
+       ============================================================ */
+    .reviews { padding: clamp(4rem, 8vw, 7rem) 0; }
+    .reviews__header { text-align: center; margin-bottom: 4rem; }
+    .reviews__title {
+      font-size: clamp(2.5rem, 5vw, 4rem);
+      margin-bottom: 0.5rem;
+    }
+    .reviews__sub {
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      color: var(--text-secondary);
+      font-size: 1.15rem;
+    }
+    .reviews__grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5rem;
+      align-items: start;
+    }
+    .review-card {
+      padding: 2.2rem;
+      background: var(--bg-elev-1);
+      border: 1px solid var(--hairline);
+      position: relative;
+      transition: transform 0.5s ease, border-color 0.5s ease;
+    }
+    .review-card:hover {
+      transform: translateY(-6px);
+      border-color: var(--accent);
+    }
+    /* Different vertical sizes for masonry-like rhythm */
+    .review-card:nth-child(2) { margin-top: 2.5rem; }
+    .review-card:nth-child(3) { margin-top: 1rem; }
+    .review-card__quote-mark {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 4rem;
+      line-height: 0.6;
+      color: var(--accent);
+      margin-bottom: 1rem;
+      display: block;
+    }
+    .review-card__body {
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-size: 1.2rem;
+      line-height: 1.55;
+      color: var(--text-primary);
+      margin-bottom: 1.8rem;
+    }
+    .review-card__stars {
+      color: var(--accent);
+      letter-spacing: 0.2em;
+      margin-bottom: 1rem;
+      font-size: 0.85rem;
+    }
+    .review-card__author {
+      font-size: 0.75rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--text-secondary);
+      font-weight: 500;
+    }
+    .review-card__source {
+      font-size: 0.7rem;
+      letter-spacing: 0.15em;
+      color: var(--text-muted);
+      margin-top: 0.3rem;
+    }
+
+    /* ============================================================
+       10. MEDIA PAGE
+       ============================================================ */
+    .media { padding: clamp(4rem, 8vw, 7rem) 0; }
+    .media__header { margin-bottom: 4rem; max-width: 700px; }
+    .media__title {
+      font-size: clamp(2.5rem, 5vw, 4rem);
+      margin-bottom: 0.5rem;
+    }
+    .media__intro {
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      color: var(--text-secondary);
+      font-size: 1.2rem;
+      margin-top: 0.8rem;
+    }
+    .media__grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
+      gap: 1.5rem;
+    }
+    .media-card {
+      background: var(--bg-elev-1);
+      border: 1px solid var(--hairline);
+      overflow: hidden;
+      transition: transform 0.5s ease, border-color 0.5s ease;
+      cursor: pointer;
+    }
+    .media-card:hover { transform: translateY(-6px); border-color: var(--accent); }
+    .media-card__visual {
+      aspect-ratio: 16/10;
+      position: relative;
+      background: linear-gradient(135deg, var(--bg-elev-2), var(--bg-frame));
+      overflow: hidden;
+      display: grid; place-items: center;
+    }
+    .media-card__visual::before {
+      content: "";
+      position: absolute; inset: 0;
+      background:
+        radial-gradient(circle at 30% 40%, color-mix(in srgb, var(--accent) 25%, transparent), transparent 60%),
+        radial-gradient(circle at 70% 70%, color-mix(in srgb, var(--accent) 15%, transparent), transparent 60%);
+    }
+    .media-card__play {
+      width: 64px; height: 64px;
+      border-radius: 50%;
+      background: var(--accent);
+      display: grid; place-items: center;
+      z-index: 2;
+      transition: transform 0.4s ease;
+      box-shadow: 0 0 30px color-mix(in srgb, var(--accent) 50%, transparent);
+    }
+    .media-card:hover .media-card__play { transform: scale(1.15); }
+    .media-card__play svg {
+      width: 22px; height: 22px;
+      fill: var(--bg-base);
+      margin-left: 3px;
+    }
+    .media-card__body { padding: 1.8rem; }
+    .media-card__type {
+      font-size: 0.65rem; letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 0.6rem;
+    }
+    .media-card__title {
+      font-size: 1.5rem;
+      margin-bottom: 0.5rem;
+    }
+    .media-card__meta {
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      letter-spacing: 0.05em;
+    }
+
+    /* ============================================================
+       11. CONTACT PAGE
+       ============================================================ */
+    .contact {
+      padding: clamp(4rem, 8vw, 7rem) 0;
+      display: grid;
+      grid-template-columns: 0.8fr 1.2fr;
+      gap: clamp(2.5rem, 6vw, 5rem);
+    }
+    .contact__intro-title {
+      font-size: clamp(2.5rem, 5vw, 4rem);
+      margin-bottom: 1.5rem;
+      font-style: italic;
+    }
+    .contact__intro-text {
+      color: var(--text-secondary);
+      max-width: 380px;
+      margin-bottom: 2rem;
+      font-size: 1rem;
+      line-height: 1.75;
+    }
+    .contact__detail {
+      padding: 1rem 0;
+      border-top: 1px solid var(--hairline);
+      font-size: 0.85rem;
+    }
+    .contact__detail-label {
+      font-size: 0.65rem; letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 0.4rem;
+    }
+    .contact__detail-value {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.1rem;
+      color: var(--text-primary);
+    }
+    .contact-form {
+      background: var(--bg-elev-1);
+      padding: clamp(2rem, 4vw, 3rem);
+      border: 1px solid var(--hairline);
+    }
+    .form-group { margin-bottom: 1.5rem; }
+    .form-group--row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.2rem;
+      margin-bottom: 1.5rem;
+    }
+    .form-group--row .form-group { margin-bottom: 0; }
+    .form-label {
+      display: block;
+      font-size: 0.65rem;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 0.6rem;
+    }
+    .form-input, .form-textarea {
+      width: 100%;
+      background: transparent;
+      border: none;
+      border-bottom: 1px solid var(--hairline-strong);
+      padding: 0.7rem 0;
+      color: var(--text-primary);
+      font: inherit;
+      font-size: 1rem;
+      transition: border-color 0.3s ease;
+      font-family: inherit;
+    }
+    .form-input:focus, .form-textarea:focus {
+      outline: none;
+      border-bottom-color: var(--accent);
+    }
+    .form-textarea { min-height: 120px; resize: vertical; }
+    .form-submit {
+      margin-top: 1rem;
+      width: 100%;
+      justify-content: center;
+    }
+    .form-success {
+      color: var(--accent);
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-size: 1.15rem;
+      margin-top: 1rem;
+      opacity: 0;
+      transition: opacity 0.4s ease;
+    }
+    .form-success.show { opacity: 1; }
+
+    /* ============================================================
+       12. FOOTER
+       ============================================================ */
+    .footer {
+      padding: 4rem clamp(1.5rem, 4vw, 3.5rem) 2rem;
+      border-top: 1px solid var(--hairline);
+      margin-top: 4rem;
+      background: var(--bg-elev-1);
+    }
+    .footer__inner {
+      max-width: 1240px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 2.5rem;
+      padding-bottom: 3rem;
+      border-bottom: 1px solid var(--hairline);
+    }
+    .footer__title {
+      font-size: 1.6rem;
+      margin-bottom: 0.8rem;
+      font-style: italic;
+    }
+    .footer__desc, .footer__list {
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+      line-height: 1.7;
+    }
+    .footer__list { list-style: none; }
+    .footer__list li { margin-bottom: 0.5rem; }
+    .footer__list a:hover { color: var(--accent); }
+    .footer__heading {
+      font-size: 0.7rem;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 1.2rem;
+      font-family: 'DM Sans', sans-serif;
+    }
+    .footer__bottom {
+      max-width: 1240px;
+      margin: 0 auto;
+      padding-top: 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      letter-spacing: 0.05em;
+    }
+    .footer__brand {
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      color: var(--accent);
+      font-size: 0.95rem;
+      letter-spacing: 0.08em;
+    }
+
+    /* ============================================================
+       13. RESPONSIVE
+       ============================================================ */
+    @media (max-width: 900px) {
+      .nav__links {
+        position: fixed;
+        top: 68px; left: 0; right: 0;
+        flex-direction: column;
+        background: var(--bg-base);
+        padding: 2rem;
+        gap: 1.5rem;
+        border-bottom: 1px solid var(--hairline);
+        transform: translateY(-110%);
+        transition: transform 0.4s ease;
+      }
+      .nav.open .nav__links { transform: translateY(0); }
+      .nav__burger { display: flex; }
+
+      .hero, .book-hero, .author, .contact {
+        grid-template-columns: 1fr;
+        text-align: left;
+      }
+      .hero__cover, .book-hero__cover, .author__motif {
+        max-width: 320px;
+        margin: 2rem auto 0;
+      }
+      .book-hero__cover { position: static; }
+      .hero { min-height: auto; padding-bottom: 3rem; }
+      .hero__title { font-size: clamp(3rem, 12vw, 5rem); }
+
+      .footer__inner { grid-template-columns: 1fr; gap: 2rem; }
+      .form-group--row { grid-template-columns: 1fr; }
+      .slider__page { flex: 0 0 80vw; }
+      .review-card:nth-child(n) { margin-top: 0; }
+    }
+    @media (max-width: 540px) {
+      .nav { padding: 1rem 1.2rem; }
+      .nav__brand { font-size: 1.2rem; }
+      .hero { padding: 2rem 1.2rem; }
+      .container { padding: 0 1.2rem; }
+      .synopsis { font-size: 1.1rem; padding: 1.5rem 0 1.5rem 1.2rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ============================================================
+       NAVIGATION
+       ============================================================ -->
+  <nav class="nav" id="nav">
+    <a href="#home" class="nav__brand" data-page="home">
+      <span class="nav__brand-mark"><span></span><span></span><span></span><span></span></span>
+      Skye Elliott
+    </a>
+
+    <ul class="nav__links" id="navLinks">
+      <li><a href="#home"    class="nav__link active" data-page="home">Home</a></li>
+      <li><a href="#book"    class="nav__link"        data-page="book">The Book</a></li>
+      <li><a href="#author"  class="nav__link"        data-page="author">Meet the Author</a></li>
+      <li><a href="#reviews" class="nav__link"        data-page="reviews">Reviews</a></li>
+      <li><a href="#media"   class="nav__link"        data-page="media">Media</a></li>
+      <li><a href="#contact" class="nav__link"        data-page="contact">Contact</a></li>
+    </ul>
+
+    <div class="nav__right">
+      <!-- Theme toggle -->
+      <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark/light theme" title="Toggle theme">
+        <span class="theme-toggle__knob"></span>
+      </button>
+      <!-- Mobile menu burger -->
+      <button class="nav__burger" id="navBurger" aria-label="Toggle navigation">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </nav>
+
+  <main>
+
+    <!-- ============================================================
+         HOME PAGE
+         ============================================================ -->
+    <section id="home" class="page active">
+      <div class="hero">
+        <div class="hero__text">
+          <div class="hero__eyebrow">A Novel by Skye Elliott</div>
+          <h1 class="hero__title">
+            Some doors are<br/>locked. Others are<em>just glass.</em>
+          </h1>
+          <p class="hero__tagline">
+            Step closer. Look longer. <em>Windows</em> is a drama of obsession, observation, and the secrets we leave illuminated for anyone patient enough to see them.
+          </p>
+          <div class="hero__cta-row">
+            <a href="#book" class="btn btn--primary" data-page="book">Discover the Book</a>
+            <a href="#author" class="btn" data-page="author">About the Author</a>
+          </div>
+        </div>
+
+        <div class="hero__cover">
+          <div class="cover-frame">
+            <span class="cover-frame__corner tr"></span>
+            <span class="cover-frame__corner bl"></span>
+            <span class="cover-frame__corner br"></span>
+            <!-- Real cover image with graceful fallback -->
+            <img
+              src="https://raw.githubusercontent.com/artchill/skye-elliott/main/windows.jpg"
+              alt="Windows by Skye Elliott — Book Cover"
+              onerror="this.outerHTML='<div class=&quot;cover-placeholder&quot;><div class=&quot;cover-placeholder__title&quot;>Windows</div><div class=&quot;cover-placeholder__author&quot;>Skye Elliott</div></div>'"
+            />
+          </div>
+        </div>
+      </div>
+
+      <!-- Take a Look Inside slider -->
+      <div class="slider-section">
+        <div class="container">
+          <div class="slider-section__header">
+            <div>
+              <div class="section-label">Take a Look Inside</div>
+              <h2 class="slider-section__title">Pages from the other side of the glass.</h2>
+            </div>
+          </div>
+        </div>
+
+        <div class="slider" id="sliderHome">
+          <div class="slider__track" data-track>
+            <!-- Page 1 -->
+            <article class="slider__page">
+              <div class="slider__page-num">Page 1 · Chapter One</div>
+              <p class="slider__page-body">
+                The window on the third floor stays open until eleven forty-seven. I know this because I have watched it for six months. I am patient. I am quiet. I am not what you think — and I am exactly what you fear.
+              </p>
+              <div class="slider__page-foot">— Windows · Opening Lines</div>
+            </article>
+            <!-- Page 2 -->
+            <article class="slider__page">
+              <div class="slider__page-num">Page 12 · Chapter Two</div>
+              <p class="slider__page-body">
+                She doesn't know I'm here. None of them do. That is the gift I give them, and the gift they unwittingly give me. In their small unrehearsed gestures, I find a tenderness the daylight will not allow.
+              </p>
+              <div class="slider__page-foot">— Windows · Excerpt</div>
+            </article>
+            <!-- Page 3 -->
+            <article class="slider__page">
+              <div class="slider__page-num">Page 47 · Chapter Five</div>
+              <p class="slider__page-body">
+                I will not harm you. I will not speak. I will only watch — and in watching, I will know you better than the husband sleeping inches from your skin. That is my crime. That is my prayer.
+              </p>
+              <div class="slider__page-foot">— Windows · Excerpt</div>
+            </article>
+            <!-- Page 4 -->
+            <article class="slider__page">
+              <div class="slider__page-num">Page 88 · Chapter Eight</div>
+              <p class="slider__page-body">
+                Right, or wrong, I will keep your secrets. I will carry them home like coins from a fountain — quietly, gratefully, knowing I had no business taking anything at all.
+              </p>
+              <div class="slider__page-foot">— Windows · Excerpt</div>
+            </article>
+          </div>
+
+          <div class="slider__controls">
+            <button class="slider__btn" data-dir="prev" aria-label="Previous page">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M15 18l-6-6 6-6"/></svg>
+            </button>
+            <span class="slider__counter" data-counter>01 / 04</span>
+            <button class="slider__btn" data-dir="next" aria-label="Next page">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 6l6 6-6 6"/></svg>
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         THE BOOK PAGE
+         ============================================================ -->
+    <section id="book" class="page">
+      <div class="container">
+        <div class="book-hero">
+          <!-- Sticky cover -->
+          <div class="book-hero__cover">
+            <div class="cover-frame">
+              <span class="cover-frame__corner tr"></span>
+              <span class="cover-frame__corner bl"></span>
+              <span class="cover-frame__corner br"></span>
+              <img
+                src="https://raw.githubusercontent.com/artchill/skye-elliott/main/windows.jpg"
+                alt="Windows by Skye Elliott — Book Cover"
+                onerror="this.outerHTML='<div class=&quot;cover-placeholder&quot;><div class=&quot;cover-placeholder__title&quot;>Windows</div><div class=&quot;cover-placeholder__author&quot;>Skye Elliott</div></div>'"
+              />
+            </div>
+          </div>
+
+          <!-- Book details -->
+          <div>
+            <div class="section-label">The Book</div>
+            <h1 class="book-hero__title">Windows</h1>
+            <div class="book-hero__sub">A Novel by Skye Elliott</div>
+
+            <div class="book-meta">
+              <div class="book-meta__item">
+                <div class="book-meta__item-label">ISBN</div>
+                <div class="book-meta__item-value">978-1662432934</div>
+              </div>
+              <div class="book-meta__item">
+                <div class="book-meta__item-label">Genre</div>
+                <div class="book-meta__item-value">Drama · Bibliography</div>
+              </div>
+              <div class="book-meta__item">
+                <div class="book-meta__item-label">Format</div>
+                <div class="book-meta__item-value">Kindle · Paperback</div>
+              </div>
+            </div>
+
+            <blockquote class="synopsis">
+              I am a voyeur. I look in your windows and gain sexual pleasure from watching your most-intimate acts. Right, or wrong, I will keep your secrets. This is for my enjoyment and only mine. I am not a judge. I will not harm you. Just let me in for a short while.
+            </blockquote>
+
+            <div class="purchase-block">
+              <div class="purchase-block__label">Available Now</div>
+              <div class="purchase-grid">
+                <a href="#" class="btn btn--primary">Amazon Kindle</a>
+                <a href="#" class="btn btn--primary">Amazon Paperback</a>
+                <a href="#" class="btn">Read Kindle Sample</a>
+                <span class="btn btn--disabled">Hardback — Coming Soon</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Slider repeated -->
+        <div class="slider-section">
+          <div class="slider-section__header">
+            <div>
+              <div class="section-label">Take a Look Inside</div>
+              <h2 class="slider-section__title">A few pages, drawn from the dark.</h2>
+            </div>
+          </div>
+
+          <div class="slider">
+            <div class="slider__track" data-track>
+              <article class="slider__page">
+                <div class="slider__page-num">Page 1 · Chapter One</div>
+                <p class="slider__page-body">
+                  The window on the third floor stays open until eleven forty-seven. I know this because I have watched it for six months. I am patient. I am quiet.
+                </p>
+                <div class="slider__page-foot">— Windows · Opening Lines</div>
+              </article>
+              <article class="slider__page">
+                <div class="slider__page-num">Page 12 · Chapter Two</div>
+                <p class="slider__page-body">
+                  She doesn't know I'm here. None of them do. That is the gift I give them, and the gift they unwittingly give me.
+                </p>
+                <div class="slider__page-foot">— Windows · Excerpt</div>
+              </article>
+              <article class="slider__page">
+                <div class="slider__page-num">Page 47 · Chapter Five</div>
+                <p class="slider__page-body">
+                  I will not harm you. I will not speak. I will only watch — and in watching, I will know you better than the husband sleeping inches from your skin.
+                </p>
+                <div class="slider__page-foot">— Windows · Excerpt</div>
+              </article>
+              <article class="slider__page">
+                <div class="slider__page-num">Page 88 · Chapter Eight</div>
+                <p class="slider__page-body">
+                  Right, or wrong, I will keep your secrets. I will carry them home like coins from a fountain — quietly, gratefully.
+                </p>
+                <div class="slider__page-foot">— Windows · Excerpt</div>
+              </article>
+            </div>
+
+            <div class="slider__controls">
+              <button class="slider__btn" data-dir="prev" aria-label="Previous page">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M15 18l-6-6 6-6"/></svg>
+              </button>
+              <span class="slider__counter" data-counter>01 / 04</span>
+              <button class="slider__btn" data-dir="next" aria-label="Next page">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 6l6 6-6 6"/></svg>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         MEET THE AUTHOR PAGE
+         ============================================================ -->
+    <section id="author" class="page">
+      <div class="container">
+        <div class="author">
+          <!-- Abstract window-pane motif (NO author photo by request) -->
+          <div class="author__motif" aria-label="Decorative window motif">
+            <div class="author__window">
+              <div class="author__window-pane"></div>
+              <div class="author__window-pane"></div>
+              <div class="author__window-pane"></div>
+              <div class="author__window-pane"></div>
+            </div>
+            <div class="author__signature">— S.E.</div>
+          </div>
+
+          <div>
+            <div class="section-label">Meet the Author</div>
+            <h1 class="author__name">Skye Elliott</h1>
+            <div class="author__role">Novelist · Observer · Storyteller</div>
+            <div class="author__bio">
+              <p>
+                Skye Elliott writes from the shadows where most refuse to look. With a keen psychological eye for the unspoken rituals and private moments that quietly define us, her work peers through the curtained windows of human experience — exploring the tension between intimacy and observation, between the secrets we keep and the truths we cannot hide. Her debut novel, <em>Windows</em>, charts the moral and emotional terrain of a watcher who knows more than he should, asking readers to reckon with their own thresholds of judgment, desire, and discretion.
+              </p>
+              <p>
+                A lifelong student of the human condition, Skye is drawn to characters who live at the margins of acceptability — those whose longings complicate easy verdicts. Her prose moves with the patience of someone who has spent years watching without being seen, attentive to small gestures and longer silences. She believes the most honest fiction lives in the spaces we are taught to ignore, and <em>Windows</em> is her invitation to step closer, to look longer, and to consider what we find there in the dark.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         REVIEWS PAGE
+         ============================================================ -->
+    <section id="reviews" class="page">
+      <div class="container">
+        <div class="reviews">
+          <div class="reviews__header">
+            <div class="section-label" style="justify-content: center;">Praise</div>
+            <h1 class="reviews__title">What the Critics Are Saying</h1>
+            <div class="reviews__sub">A book that watches you back.</div>
+          </div>
+
+          <div class="reviews__grid">
+            <article class="review-card">
+              <span class="review-card__quote-mark">“</span>
+              <div class="review-card__stars">★ ★ ★ ★ ★</div>
+              <p class="review-card__body">
+                A masterclass in psychological suspense. Elliott writes with the precision of a surgeon and the patience of a predator. I haven't been this quietly unsettled by a novel in years — and I haven't been able to stop thinking about it since.
+              </p>
+              <div class="review-card__author">Marlena Voss</div>
+              <div class="review-card__source">Literary Review Monthly</div>
+            </article>
+
+            <article class="review-card">
+              <span class="review-card__quote-mark">“</span>
+              <div class="review-card__stars">★ ★ ★ ★ ★</div>
+              <p class="review-card__body">
+                <em>Windows</em> refuses to let you look away. Elliott has crafted a narrator so morally ambiguous and so devastatingly quiet that you will find yourself checking your own blinds long after the last page has been turned. A debut of unusual nerve.
+              </p>
+              <div class="review-card__author">Daniel Aibhe</div>
+              <div class="review-card__source">Crooked Spine Magazine</div>
+            </article>
+
+            <article class="review-card">
+              <span class="review-card__quote-mark">“</span>
+              <div class="review-card__stars">★ ★ ★ ★ ★</div>
+              <p class="review-card__body">
+                Brave, transgressive, and utterly compelling. The kind of intense psychological drama that announces a serious voice in contemporary literary fiction — gripping from its first line and refusing to release until its final, devastating image.
+              </p>
+              <div class="review-card__author">Yara Salim</div>
+              <div class="review-card__source">Inkwell Quarterly</div>
+            </article>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         MEDIA PAGE
+         ============================================================ -->
+    <section id="media" class="page">
+      <div class="container">
+        <div class="media">
+          <div class="media__header">
+            <div class="section-label">Media &amp; Press</div>
+            <h1 class="media__title">Beyond the Page</h1>
+            <p class="media__intro">
+              Interviews, trailers, and features exploring the making of <em>Windows</em> and the quiet obsessions behind it.
+            </p>
+          </div>
+
+          <div class="media__grid">
+            <!-- Card 1 -->
+            <article class="media-card">
+              <div class="media-card__visual">
+                <div class="media-card__play">
+                  <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                </div>
+              </div>
+              <div class="media-card__body">
+                <div class="media-card__type">Podcast Interview</div>
+                <h3 class="media-card__title">On Watching: A Conversation with Skye Elliott</h3>
+                <div class="media-card__meta">The Quiet Mile Podcast · 48 min</div>
+              </div>
+            </article>
+
+            <!-- Card 2 -->
+            <article class="media-card">
+              <div class="media-card__visual">
+                <div class="media-card__play">
+                  <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                </div>
+              </div>
+              <div class="media-card__body">
+                <div class="media-card__type">Book Trailer</div>
+                <h3 class="media-card__title">Windows — Official Book Trailer</h3>
+                <div class="media-card__meta">Premiered Spring 2024 · 1 min 42</div>
+              </div>
+            </article>
+
+            <!-- Card 3 -->
+            <article class="media-card">
+              <div class="media-card__visual">
+                <div class="media-card__play">
+                  <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                </div>
+              </div>
+              <div class="media-card__body">
+                <div class="media-card__type">Press Feature</div>
+                <h3 class="media-card__title">The Voyeur's Confession: Skye Elliott in Profile</h3>
+                <div class="media-card__meta">Literary Hub · Feature Essay</div>
+              </div>
+            </article>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         CONTACT PAGE
+         ============================================================ -->
+    <section id="contact" class="page">
+      <div class="container">
+        <div class="contact">
+          <div>
+            <div class="section-label">Get In Touch</div>
+            <h1 class="contact__intro-title">Leave a message at the window.</h1>
+            <p class="contact__intro-text">
+              For press, speaking engagements, signings, or general inquiries — your message will be read carefully and answered with the same.
+            </p>
+            <div class="contact__detail">
+              <div class="contact__detail-label">Press &amp; Media</div>
+              <div class="contact__detail-value">press@skyeelliott.com</div>
+            </div>
+            <div class="contact__detail">
+              <div class="contact__detail-label">Literary Agent</div>
+              <div class="contact__detail-value">Astor &amp; Glass Literary</div>
+            </div>
+            <div class="contact__detail">
+              <div class="contact__detail-label">Events</div>
+              <div class="contact__detail-value">By appointment only</div>
+            </div>
+          </div>
+
+          <form class="contact-form" id="contactForm" novalidate>
+            <div class="form-group--row">
+              <div class="form-group">
+                <label class="form-label" for="name">Your Name</label>
+                <input type="text" id="name" class="form-input" required />
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="email">Email Address</label>
+                <input type="email" id="email" class="form-input" required />
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="subject">Subject</label>
+              <input type="text" id="subject" class="form-input" required />
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="message">Message</label>
+              <textarea id="message" class="form-textarea" required></textarea>
+            </div>
+            <button type="submit" class="btn btn--primary form-submit">Send Message</button>
+            <div class="form-success" id="formSuccess">
+              Your message has been received. Thank you for writing.
+            </div>
+          </form>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ============================================================
+       FOOTER
+       ============================================================ -->
+  <footer class="footer">
+    <div class="footer__inner">
+      <div>
+        <h3 class="footer__title">Skye Elliott</h3>
+        <p class="footer__desc">
+          Author of <em>Windows</em> — literary drama exploring the dark, the hidden, and the intimate.
+        </p>
+      </div>
+      <div>
+        <div class="footer__heading">Explore</div>
+        <ul class="footer__list">
+          <li><a href="#home"    data-page="home">Home</a></li>
+          <li><a href="#book"    data-page="book">The Book</a></li>
+          <li><a href="#author"  data-page="author">Meet the Author</a></li>
+          <li><a href="#reviews" data-page="reviews">Reviews</a></li>
+          <li><a href="#media"   data-page="media">Media</a></li>
+          <li><a href="#contact" data-page="contact">Contact</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="footer__heading">Stay Close</div>
+        <p class="footer__desc">
+          For news on upcoming books and events, write to <em>press@skyeelliott.com</em>.
+        </p>
+      </div>
+    </div>
+    <div class="footer__bottom">
+      <div>© 2026 Skye Elliott. All rights reserved.</div>
+      <div class="footer__brand">Developed by Archelo Design.</div>
+    </div>
+  </footer>
+
+  <script>
+    /* ============================================================
+       JAVASCRIPT — SPA navigation, theme toggle, slider, form
+       ============================================================ */
+
+    /* ---------- 1. SPA Navigation ----------
+       Hide/show sections based on hash + data-page links */
+    const pages    = document.querySelectorAll('.page');
+    const navLinks = document.querySelectorAll('.nav__link');
+    const nav      = document.getElementById('nav');
+
+    function showPage(id) {
+      // Default to home if nothing matches
+      const target = document.getElementById(id) ? id : 'home';
+
+      pages.forEach(p => p.classList.toggle('active', p.id === target));
+      navLinks.forEach(l => l.classList.toggle('active', l.dataset.page === target));
+
+      // Close mobile menu after navigation, then scroll up
+      nav.classList.remove('open');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // Hook every element with data-page (nav, footer, in-page CTAs)
+    document.querySelectorAll('[data-page]').forEach(el => {
+      el.addEventListener('click', (e) => {
+        e.preventDefault();
+        const page = el.dataset.page;
+        history.pushState(null, '', '#' + page);
+        showPage(page);
+      });
+    });
+
+    // Support browser back/forward + direct hash visits
+    window.addEventListener('popstate', () => showPage(location.hash.replace('#', '') || 'home'));
+    window.addEventListener('DOMContentLoaded', () => showPage(location.hash.replace('#', '') || 'home'));
+
+
+    /* ---------- 2. Theme Toggle (Dark / Light) ----------
+       Updates CSS vars via data-theme on <html> + persists choice */
+    const themeToggle = document.getElementById('themeToggle');
+    const root        = document.documentElement;
+
+    // Restore saved preference if present
+    const savedTheme = localStorage.getItem('skye-theme');
+    if (savedTheme) root.setAttribute('data-theme', savedTheme);
+
+    themeToggle.addEventListener('click', () => {
+      const current = root.getAttribute('data-theme');
+      const next    = current === 'dark' ? 'light' : 'dark';
+      root.setAttribute('data-theme', next);
+      localStorage.setItem('skye-theme', next);
+    });
+
+
+    /* ---------- 3. Mobile Menu Burger ---------- */
+    document.getElementById('navBurger').addEventListener('click', () => {
+      nav.classList.toggle('open');
+    });
+
+
+    /* ---------- 4. "Take a Look Inside" Slider ----------
+       Each .slider on the page is independent — supports multiple instances */
+    document.querySelectorAll('.slider').forEach(slider => {
+      const track    = slider.querySelector('[data-track]');
+      const pagesEls = track.children;
+      const counter  = slider.querySelector('[data-counter]');
+      const prevBtn  = slider.querySelector('[data-dir="prev"]');
+      const nextBtn  = slider.querySelector('[data-dir="next"]');
+
+      let index = 0;
+      const total = pagesEls.length;
+
+      function update() {
+        // Compute offset using actual rendered card width + gap
+        const cardW = pagesEls[0].getBoundingClientRect().width;
+        const gap   = parseFloat(getComputedStyle(track).gap) || 0;
+        track.style.transform = `translateX(${-index * (cardW + gap)}px)`;
+
+        counter.textContent =
+          String(index + 1).padStart(2, '0') + ' / ' + String(total).padStart(2, '0');
+
+        prevBtn.disabled = index === 0;
+        nextBtn.disabled = index === total - 1;
+      }
+
+      prevBtn.addEventListener('click', () => { if (index > 0)         { index--; update(); } });
+      nextBtn.addEventListener('click', () => { if (index < total - 1) { index++; update(); } });
+
+      // Recalc on window resize (cards change width)
+      window.addEventListener('resize', update);
+      update();
+    });
+
+
+    /* ---------- 5. Contact Form ----------
+       Demo handler — would post to backend in production */
+    const form    = document.getElementById('contactForm');
+    const success = document.getElementById('formSuccess');
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      // Basic validation
+      const inputs = form.querySelectorAll('input, textarea');
+      let valid = true;
+      inputs.forEach(i => { if (!i.value.trim()) valid = false; });
+      if (!valid) return;
+
+      // Simulate send
+      success.classList.add('show');
+      form.reset();
+      setTimeout(() => success.classList.remove('show'), 4500);
+    });
+  </script>
+</body>
+</html>
