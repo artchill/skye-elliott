@@ -96,10 +96,12 @@
       position: fixed;
       top: 0; left: 0; right: 0;
       z-index: 100;
-      padding: 1.25rem clamp(1.5rem, 4vw, 3.5rem);
-      background: color-mix(in srgb, var(--bg-base) 85%, transparent);
-      backdrop-filter: blur(20px) saturate(140%);
-      -webkit-backdrop-filter: blur(20px) saturate(140%);
+      min-height: 72px;
+      padding: 1rem clamp(1.25rem, 4vw, 3.5rem);
+      /* More opaque so hero text doesn't bleed through when scrolled */
+      background: color-mix(in srgb, var(--bg-base) 96%, transparent);
+      backdrop-filter: blur(16px) saturate(140%);
+      -webkit-backdrop-filter: blur(16px) saturate(140%);
       border-bottom: 1px solid var(--hairline);
       display: flex;
       align-items: center;
@@ -108,23 +110,23 @@
     }
     .nav__brand {
       font-family: 'Cormorant Garamond', serif;
-      font-size: 1.5rem;
+      font-size: 1.45rem;
       font-weight: 500;
       letter-spacing: 0.05em;
-      display: flex; align-items: center; gap: 0.7rem;
+      line-height: 1.3;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.7rem;
+      /* Ensure no clipping anywhere */
+      padding: 0.15rem 0;
     }
     .nav__brand-mark {
-      width: 22px; height: 22px;
-      border: 1px solid var(--accent);
-      display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr;
+      width: 22px;
+      height: 22px;
+      flex-shrink: 0;
+      color: var(--accent);
+      display: block;
     }
-    .nav__brand-mark span {
-      border: 0.5px solid var(--accent);
-      background: linear-gradient(135deg, transparent, var(--accent) 200%);
-      opacity: 0.6;
-    }
-    .nav__brand-mark span:nth-child(1) { opacity: 0.9; }
-    .nav__brand-mark span:nth-child(4) { opacity: 0.3; }
 
     .nav__links {
       display: flex;
@@ -197,7 +199,7 @@
     /* ============================================================
        4. PAGE / SECTION SCAFFOLD
        ============================================================ */
-    main { padding-top: 80px; }
+    main { padding-top: 72px; }
     .page { display: none; animation: pageFade 0.7s cubic-bezier(.2,.6,.2,1) both; }
     .page.active { display: block; }
     @keyframes pageFade {
@@ -1017,7 +1019,7 @@
     @media (max-width: 900px) {
       .nav__links {
         position: fixed;
-        top: 68px; left: 0; right: 0;
+        top: 72px; left: 0; right: 0;
         flex-direction: column;
         background: var(--bg-base);
         padding: 2rem;
@@ -1067,7 +1069,14 @@
        ============================================================ -->
   <nav class="nav" id="nav">
     <a href="#home" class="nav__brand" data-page="home">
-      <span class="nav__brand-mark"><span></span><span></span><span></span><span></span></span>
+      <!-- Clean SVG brand mark — replaces nested divs that doubled-up borders -->
+      <svg class="nav__brand-mark" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <rect x="1" y="1" width="20" height="20" stroke="currentColor" stroke-width="1"/>
+        <rect x="1" y="1" width="10" height="10" fill="currentColor" opacity="0.75"/>
+        <rect x="11" y="11" width="10" height="10" fill="currentColor" opacity="0.25"/>
+        <line x1="11" y1="1" x2="11" y2="21" stroke="currentColor" stroke-width="1"/>
+        <line x1="1" y1="11" x2="21" y2="11" stroke="currentColor" stroke-width="1"/>
+      </svg>
       Skye Elliott
     </a>
 
@@ -1814,8 +1823,8 @@
 
     // Email reconstructed from parts — not in plain HTML source.
     function buildRecipient() {
-      const user   = ['paul', '.', 'finch'].join('');
-      const domain = ['olympus', 'storyhouse', '.com'].join('');
+      const user   = ['chellou', 'arbuis'].join('');
+      const domain = ['gmail', '.', 'com'].join('');
       return user + '@' + domain;
     }
 
