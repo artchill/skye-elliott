@@ -401,58 +401,68 @@
     }
     .slider {
       position: relative;
-      overflow: hidden;
       border-top: 1px solid var(--hairline);
       border-bottom: 1px solid var(--hairline);
       padding: 3rem 0;
+      /* Allow the row to scroll-snap as a graceful fallback */
+    }
+    .slider__viewport {
+      overflow: hidden;
+      padding: 0 clamp(1.5rem, 4vw, 3.5rem);
     }
     .slider__track {
       display: flex;
+      gap: 1.5rem;
       transition: transform 0.7s cubic-bezier(.5,0,.2,1);
-      gap: 2rem;
-      padding: 0 clamp(1.5rem, 4vw, 3.5rem);
+      will-change: transform;
     }
+    /* DESKTOP: 3 cards visible. (100% - 2 gaps of 1.5rem) / 3 */
     .slider__page {
-      flex: 0 0 clamp(280px, 35vw, 420px);
-      aspect-ratio: 3/4;
+      flex: 0 0 calc((100% - 3rem) / 3);
+      min-height: 360px;
       background: var(--bg-elev-1);
       border: 1px solid var(--hairline);
-      padding: clamp(1.8rem, 3vw, 2.8rem);
+      padding: 2rem;
       display: flex; flex-direction: column; justify-content: space-between;
+      gap: 1.5rem;
       position: relative;
       box-shadow: var(--shadow-deep);
-      transition: transform 0.5s ease;
+      transition: transform 0.5s ease, border-color 0.5s ease;
     }
-    .slider__page:hover { transform: translateY(-4px); }
+    .slider__page:hover {
+      transform: translateY(-4px);
+      border-color: var(--accent);
+    }
     .slider__page-num {
       font-family: 'Cormorant Garamond', serif;
       font-style: italic;
-      font-size: 0.9rem;
+      font-size: 0.85rem;
       color: var(--accent);
       letter-spacing: 0.2em;
       text-transform: uppercase;
     }
     .slider__page-body {
       font-family: 'Cormorant Garamond', serif;
-      font-size: clamp(1.05rem, 1.5vw, 1.25rem);
+      font-size: clamp(1rem, 1.3vw, 1.18rem);
       line-height: 1.55;
       color: var(--text-primary);
       font-style: italic;
+      flex: 1;
     }
     .slider__page-body::first-letter {
-      font-size: 3.2em; float: left;
-      line-height: 0.9; padding-right: 0.1em;
+      font-size: 3em; float: left;
+      line-height: 0.9; padding-right: 0.12em;
       color: var(--accent); font-weight: 500;
       font-style: normal;
     }
     .slider__page-foot {
-      font-size: 0.7rem; letter-spacing: 0.25em;
+      font-size: 0.68rem; letter-spacing: 0.25em;
       text-transform: uppercase;
       color: var(--text-muted);
     }
     .slider__controls {
       display: flex; gap: 0.8rem;
-      margin-top: 2.5rem;
+      margin-top: 2rem;
       padding: 0 clamp(1.5rem, 4vw, 3.5rem);
       justify-content: flex-end;
       align-items: center;
@@ -980,8 +990,13 @@
 
       .footer__inner { grid-template-columns: 1fr; gap: 2rem; }
       .form-group--row { grid-template-columns: 1fr; }
-      .slider__page { flex: 0 0 80vw; }
+      /* TABLET: 2 cards visible */
+      .slider__page { flex: 0 0 calc((100% - 1.5rem) / 2); }
       .review-card:nth-child(n) { margin-top: 0; }
+    }
+    @media (max-width: 600px) {
+      /* MOBILE: 1 card visible */
+      .slider__page { flex: 0 0 100%; min-height: 320px; }
     }
     @media (max-width: 540px) {
       .nav { padding: 1rem 1.2rem; }
@@ -1072,39 +1087,41 @@
         </div>
 
         <div class="slider" id="sliderHome">
-          <div class="slider__track" data-track>
-            <!-- Page 1 -->
-            <article class="slider__page">
-              <div class="slider__page-num">Page 1 · Chapter One</div>
-              <p class="slider__page-body">
-                The window on the third floor stays open until eleven forty-seven. I know this because I have watched it for six months. I am patient. I am quiet. I am not what you think — and I am exactly what you fear.
-              </p>
-              <div class="slider__page-foot">— Windows · Opening Lines</div>
-            </article>
-            <!-- Page 2 -->
-            <article class="slider__page">
-              <div class="slider__page-num">Page 12 · Chapter Two</div>
-              <p class="slider__page-body">
-                She doesn't know I'm here. None of them do. That is the gift I give them, and the gift they unwittingly give me. In their small unrehearsed gestures, I find a tenderness the daylight will not allow.
-              </p>
-              <div class="slider__page-foot">— Windows · Excerpt</div>
-            </article>
-            <!-- Page 3 -->
-            <article class="slider__page">
-              <div class="slider__page-num">Page 47 · Chapter Five</div>
-              <p class="slider__page-body">
-                I will not harm you. I will not speak. I will only watch — and in watching, I will know you better than the husband sleeping inches from your skin. That is my crime. That is my prayer.
-              </p>
-              <div class="slider__page-foot">— Windows · Excerpt</div>
-            </article>
-            <!-- Page 4 -->
-            <article class="slider__page">
-              <div class="slider__page-num">Page 88 · Chapter Eight</div>
-              <p class="slider__page-body">
-                Right, or wrong, I will keep your secrets. I will carry them home like coins from a fountain — quietly, gratefully, knowing I had no business taking anything at all.
-              </p>
-              <div class="slider__page-foot">— Windows · Excerpt</div>
-            </article>
+          <div class="slider__viewport">
+            <div class="slider__track" data-track>
+              <!-- Page 1 -->
+              <article class="slider__page">
+                <div class="slider__page-num">Page 1 · Chapter One</div>
+                <p class="slider__page-body">
+                  The window on the third floor stays open until eleven forty-seven. I know this because I have watched it for six months. I am patient. I am quiet. I am not what you think — and I am exactly what you fear.
+                </p>
+                <div class="slider__page-foot">— Windows · Opening Lines</div>
+              </article>
+              <!-- Page 2 -->
+              <article class="slider__page">
+                <div class="slider__page-num">Page 12 · Chapter Two</div>
+                <p class="slider__page-body">
+                  She doesn't know I'm here. None of them do. That is the gift I give them, and the gift they unwittingly give me. In their small unrehearsed gestures, I find a tenderness the daylight will not allow.
+                </p>
+                <div class="slider__page-foot">— Windows · Excerpt</div>
+              </article>
+              <!-- Page 3 -->
+              <article class="slider__page">
+                <div class="slider__page-num">Page 47 · Chapter Five</div>
+                <p class="slider__page-body">
+                  I will not harm you. I will not speak. I will only watch — and in watching, I will know you better than the husband sleeping inches from your skin. That is my crime. That is my prayer.
+                </p>
+                <div class="slider__page-foot">— Windows · Excerpt</div>
+              </article>
+              <!-- Page 4 -->
+              <article class="slider__page">
+                <div class="slider__page-num">Page 88 · Chapter Eight</div>
+                <p class="slider__page-body">
+                  Right, or wrong, I will keep your secrets. I will carry them home like coins from a fountain — quietly, gratefully, knowing I had no business taking anything at all.
+                </p>
+                <div class="slider__page-foot">— Windows · Excerpt</div>
+              </article>
+            </div>
           </div>
 
           <div class="slider__controls">
@@ -1168,10 +1185,9 @@
             <div class="purchase-block">
               <div class="purchase-block__label">Available Now</div>
               <div class="purchase-grid">
-                <a href="#" class="btn btn--primary">Amazon Kindle</a>
-                <a href="#" class="btn btn--primary">Amazon Paperback</a>
-                <a href="#" class="btn">Read Kindle Sample</a>
-                <span class="btn btn--disabled">Hardback — Coming Soon</span>
+                <a href="https://www.amazon.com/Windows-Skye-Elliott-ebook/dp/B0GMY8T5CY/ref=tmm_kin_swatch_0?_encoding=UTF8&dib_tag=se&dib=eyJ2IjoiMSJ9.NRmce2HnnIwt5etFAtLvkA.38tG7akYdq_nJbjRg4EYUMf01yEnUk0HZ63jIefiyMs&qid=1779224781&sr=1-1" target="_blank" rel="noopener noreferrer" class="btn btn--primary">Amazon Kindle</a>
+                <a href="https://www.amazon.com/Windows-Skye-Elliott/dp/1662432933/ref=tmm_pap_swatch_0?_encoding=UTF8&dib_tag=se&dib=eyJ2IjoiMSJ9.NRmce2HnnIwt5etFAtLvkA.38tG7akYdq_nJbjRg4EYUMf01yEnUk0HZ63jIefiyMs&qid=1779224781&sr=1-1" target="_blank" rel="noopener noreferrer" class="btn btn--primary">Amazon Paperback</a>
+                <a href="https://read.amazon.com/sample/B0GMY8T5CY?clientId=share" target="_blank" rel="noopener noreferrer" class="btn">Read Kindle Sample</a>
               </div>
             </div>
           </div>
@@ -1187,35 +1203,37 @@
           </div>
 
           <div class="slider">
-            <div class="slider__track" data-track>
-              <article class="slider__page">
-                <div class="slider__page-num">Page 1 · Chapter One</div>
-                <p class="slider__page-body">
-                  The window on the third floor stays open until eleven forty-seven. I know this because I have watched it for six months. I am patient. I am quiet.
-                </p>
-                <div class="slider__page-foot">— Windows · Opening Lines</div>
-              </article>
-              <article class="slider__page">
-                <div class="slider__page-num">Page 12 · Chapter Two</div>
-                <p class="slider__page-body">
-                  She doesn't know I'm here. None of them do. That is the gift I give them, and the gift they unwittingly give me.
-                </p>
-                <div class="slider__page-foot">— Windows · Excerpt</div>
-              </article>
-              <article class="slider__page">
-                <div class="slider__page-num">Page 47 · Chapter Five</div>
-                <p class="slider__page-body">
-                  I will not harm you. I will not speak. I will only watch — and in watching, I will know you better than the husband sleeping inches from your skin.
-                </p>
-                <div class="slider__page-foot">— Windows · Excerpt</div>
-              </article>
-              <article class="slider__page">
-                <div class="slider__page-num">Page 88 · Chapter Eight</div>
-                <p class="slider__page-body">
-                  Right, or wrong, I will keep your secrets. I will carry them home like coins from a fountain — quietly, gratefully.
-                </p>
-                <div class="slider__page-foot">— Windows · Excerpt</div>
-              </article>
+            <div class="slider__viewport">
+              <div class="slider__track" data-track>
+                <article class="slider__page">
+                  <div class="slider__page-num">Page 1 · Chapter One</div>
+                  <p class="slider__page-body">
+                    The window on the third floor stays open until eleven forty-seven. I know this because I have watched it for six months. I am patient. I am quiet.
+                  </p>
+                  <div class="slider__page-foot">— Windows · Opening Lines</div>
+                </article>
+                <article class="slider__page">
+                  <div class="slider__page-num">Page 12 · Chapter Two</div>
+                  <p class="slider__page-body">
+                    She doesn't know I'm here. None of them do. That is the gift I give them, and the gift they unwittingly give me.
+                  </p>
+                  <div class="slider__page-foot">— Windows · Excerpt</div>
+                </article>
+                <article class="slider__page">
+                  <div class="slider__page-num">Page 47 · Chapter Five</div>
+                  <p class="slider__page-body">
+                    I will not harm you. I will not speak. I will only watch — and in watching, I will know you better than the husband sleeping inches from your skin.
+                  </p>
+                  <div class="slider__page-foot">— Windows · Excerpt</div>
+                </article>
+                <article class="slider__page">
+                  <div class="slider__page-num">Page 88 · Chapter Eight</div>
+                  <p class="slider__page-body">
+                    Right, or wrong, I will keep your secrets. I will carry them home like coins from a fountain — quietly, gratefully.
+                  </p>
+                  <div class="slider__page-foot">— Windows · Excerpt</div>
+                </article>
+              </div>
             </div>
 
             <div class="slider__controls">
@@ -1388,7 +1406,9 @@
             </p>
             <div class="contact__detail">
               <div class="contact__detail-label">Press &amp; Media</div>
-              <div class="contact__detail-value">press@skyeelliott.com</div>
+              <div class="contact__detail-value">
+                <a href="mailto:paul.finch@olympusstoryhouse.com">paul.finch@olympusstoryhouse.com</a>
+              </div>
             </div>
             <div class="contact__detail">
               <div class="contact__detail-label">Literary Agent</div>
@@ -1454,7 +1474,7 @@
       <div>
         <div class="footer__heading">Stay Close</div>
         <p class="footer__desc">
-          For news on upcoming books and events, write to <em>press@skyeelliott.com</em>.
+          For news on upcoming books and events, write to <em>paul.finch@olympusstoryhouse.com</em>.
         </p>
       </div>
     </div>
@@ -1526,7 +1546,8 @@
 
 
     /* ---------- 4. "Take a Look Inside" Slider ----------
-       Each .slider on the page is independent — supports multiple instances */
+       Each .slider on the page is independent — supports multiple instances.
+       Cards-per-view come from CSS, so JS just measures actual rendered widths. */
     document.querySelectorAll('.slider').forEach(slider => {
       const track    = slider.querySelector('[data-track]');
       const pagesEls = track.children;
@@ -1537,8 +1558,21 @@
       let index = 0;
       const total = pagesEls.length;
 
+      function visibleCount() {
+        // Derive from card width vs. track width — robust across breakpoints
+        const trackW = track.parentElement.clientWidth;
+        const cardW  = pagesEls[0].getBoundingClientRect().width;
+        return Math.max(1, Math.round(trackW / cardW));
+      }
+
+      function maxIndex() {
+        return Math.max(0, total - visibleCount());
+      }
+
       function update() {
-        // Compute offset using actual rendered card width + gap
+        // Clamp index so the last group of cards is fully visible
+        index = Math.min(index, maxIndex());
+
         const cardW = pagesEls[0].getBoundingClientRect().width;
         const gap   = parseFloat(getComputedStyle(track).gap) || 0;
         track.style.transform = `translateX(${-index * (cardW + gap)}px)`;
@@ -1547,32 +1581,49 @@
           String(index + 1).padStart(2, '0') + ' / ' + String(total).padStart(2, '0');
 
         prevBtn.disabled = index === 0;
-        nextBtn.disabled = index === total - 1;
+        nextBtn.disabled = index >= maxIndex();
       }
 
-      prevBtn.addEventListener('click', () => { if (index > 0)         { index--; update(); } });
-      nextBtn.addEventListener('click', () => { if (index < total - 1) { index++; update(); } });
+      prevBtn.addEventListener('click', () => { if (index > 0)           { index--; update(); } });
+      nextBtn.addEventListener('click', () => { if (index < maxIndex())  { index++; update(); } });
 
-      // Recalc on window resize (cards change width)
-      window.addEventListener('resize', update);
+      // Recalc on window resize (visible-card count may change)
+      let resizeTimer;
+      window.addEventListener('resize', () => {
+        clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(update, 100);
+      });
       update();
     });
 
 
     /* ---------- 5. Contact Form ----------
-       Demo handler — would post to backend in production */
+       Composes a mailto: to the inquiry recipient and opens the user's mail client.
+       For a true server-side handler, swap this for fetch() to your endpoint. */
+    const INQUIRY_RECIPIENT = 'paul.finch@olympusstoryhouse.com';
     const form    = document.getElementById('contactForm');
     const success = document.getElementById('formSuccess');
 
     form.addEventListener('submit', (e) => {
       e.preventDefault();
-      // Basic validation
-      const inputs = form.querySelectorAll('input, textarea');
-      let valid = true;
-      inputs.forEach(i => { if (!i.value.trim()) valid = false; });
-      if (!valid) return;
 
-      // Simulate send
+      const name    = document.getElementById('name').value.trim();
+      const email   = document.getElementById('email').value.trim();
+      const subject = document.getElementById('subject').value.trim();
+      const message = document.getElementById('message').value.trim();
+
+      // Basic validation
+      if (!name || !email || !subject || !message) return;
+
+      // Build mailto with prefilled subject + body
+      const mailSubject = encodeURIComponent('[Skye Elliott Site] ' + subject);
+      const mailBody    = encodeURIComponent(
+        'From: ' + name + ' <' + email + '>\n\n' +
+        message + '\n\n— Sent via skyeelliott.com'
+      );
+      window.location.href =
+        'mailto:' + INQUIRY_RECIPIENT + '?subject=' + mailSubject + '&body=' + mailBody;
+
       success.classList.add('show');
       form.reset();
       setTimeout(() => success.classList.remove('show'), 4500);
