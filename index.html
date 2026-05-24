@@ -1593,6 +1593,14 @@
       nav.classList.remove('open');
       document.body.style.overflow = '';
       window.scrollTo({ top: 0, behavior: 'smooth' });
+
+      // Re-trigger any sliders inside the now-visible page so they re-measure
+      // their cards (their getBoundingClientRect width was 0 while hidden).
+      requestAnimationFrame(() => {
+        document
+          .querySelectorAll('#' + target + ' .slider')
+          .forEach(s => s._update && s._update());
+      });
     }
 
     // Hook every element with data-page (nav, footer, in-page CTAs)
@@ -1646,7 +1654,11 @@
 
     /* ---------- 4. "Take a Look Inside" Slider ----------
        Each .slider on the page is independent — supports multiple instances.
-       Cards-per-view come from CSS, so JS just measures actual rendered widths. */
+       Cards-per-view come from CSS, so JS just measures actual rendered widths.
+
+       NOTE: Sliders inside hidden SPA pages (display:none) have card width = 0
+       at init time. update() guards against this and is re-triggered from
+       showPage() whenever a page becomes visible. */
     document.querySelectorAll('.slider').forEach(slider => {
       const track    = slider.querySelector('[data-track]');
       const pagesEls = track.children;
@@ -1658,9 +1670,9 @@
       const total = pagesEls.length;
 
       function visibleCount() {
-        // Derive from card width vs. track width — robust across breakpoints
         const trackW = track.parentElement.clientWidth;
         const cardW  = pagesEls[0].getBoundingClientRect().width;
+        if (!cardW) return 1;
         return Math.max(1, Math.round(trackW / cardW));
       }
 
@@ -1669,11 +1681,16 @@
       }
 
       function update() {
+        const cardW = pagesEls[0].getBoundingClientRect().width;
+        // Page not laid out yet (display:none in an SPA section).
+        // Bail without disabling buttons — they'll be re-enabled when
+        // showPage() calls update() after the page becomes visible.
+        if (!cardW) return;
+
         // Clamp index so the last group of cards is fully visible
         index = Math.min(index, maxIndex());
 
-        const cardW = pagesEls[0].getBoundingClientRect().width;
-        const gap   = parseFloat(getComputedStyle(track).gap) || 0;
+        const gap = parseFloat(getComputedStyle(track).gap) || 0;
         track.style.transform = `translateX(${-index * (cardW + gap)}px)`;
 
         counter.textContent =
@@ -1682,6 +1699,9 @@
         prevBtn.disabled = index === 0;
         nextBtn.disabled = index >= maxIndex();
       }
+
+      // Expose update on the DOM element so showPage() can re-trigger it
+      slider._update = update;
 
       prevBtn.addEventListener('click', () => { if (index > 0)           { index--; update(); } });
       nextBtn.addEventListener('click', () => { if (index < maxIndex())  { index++; update(); } });
