@@ -1717,30 +1717,33 @@
 
 
     /* ---------- 5. Contact Form ----------
-       The form POSTs to FormSubmit.co — a free relay that forwards the
-       submission to a configured recipient via email. The recipient
-       address is NEVER rendered into the HTML; it's reconstructed from
-       split parts at submit time so it isn't visible to site visitors
-       or to source-view scrapers grepping for "@".
+       Posts to FormSubmit.co — a free relay that forwards submissions to a
+       recipient inbox via email. Recipient address is reconstructed from
+       small parts at submit time so it isn't grep-able in HTML source.
 
-       UPGRADE PATH FOR EVEN STRONGER PRIVACY:
-       After the first submission, FormSubmit emails Paul an activation
-       link. Once he confirms, they assign a hash like "abc123def456".
-       Replace the buildRecipient() function below with:
-           function buildRecipient() { return 'abc123def456'; }
-       That hash routes to the same inbox but reveals nothing.
-    */
+       ONE-TIME ACTIVATION (required by FormSubmit):
+       The very first submission triggers a confirmation email to the
+       recipient inbox. The recipient clicks the link in that email once
+       to activate the relay. Every submission after that delivers
+       automatically with no further action.
+
+       UPGRADE FOR EVEN STRONGER PRIVACY:
+       After activation, FormSubmit emails the recipient a random hash
+       (e.g. "abc123def456") that routes to the same inbox. Replace the
+       body of buildRecipient() with `return 'abc123def456';` and the
+       email parts disappear from the source entirely. */
     const form        = document.getElementById('contactForm');
     const status      = document.getElementById('formStatus');
     const submitBtn   = document.getElementById('formSubmitBtn');
     const submitText  = document.getElementById('formSubmitText');
 
-    // Email reconstructed from parts — not in plain HTML source.
+    // Recipient assembled from many small parts at runtime
     function buildRecipient() {
-      const user   = ['chellou', 'arbuis'].join('');
-      const domain = ['gmail', '.', 'com'].join('');
-      return user + '@' + domain;
+      const parts = ['ch','el','lo','ua','rb','ui','s','@','gm','a','il','.','com'];
+      return parts.join('');
     }
+
+    const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
     function setStatus(message, type) {
       status.textContent = message;
@@ -1752,13 +1755,27 @@
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
 
-      // Validate
+      // Honeypot — if a bot filled the hidden field, silently "succeed"
+      // so it doesn't realise it was caught and just try again.
+      if (form._honey && form._honey.value.trim()) {
+        setStatus('Your message has been received. Thank you for writing.', 'success');
+        form.reset();
+        return;
+      }
+
       const name    = form.name.value.trim();
       const email   = form.email.value.trim();
       const subject = form.subject.value.trim();
       const message = form.message.value.trim();
+
+      // Validate
       if (!name || !email || !subject || !message) {
         setStatus('Please fill in every field before sending.', 'error');
+        return;
+      }
+      if (!EMAIL_RE.test(email)) {
+        setStatus('Please enter a valid email address.', 'error');
+        form.email.focus();
         return;
       }
 
@@ -1771,23 +1788,47 @@
       // Build endpoint at runtime; recipient never sits in HTML source
       const endpoint = 'https://formsubmit.co/ajax/' + encodeURIComponent(buildRecipient());
 
+      // Payload includes FormSubmit's special control fields
+      const payload = {
+        name,
+        email,
+        subject,
+        message,
+        _subject:  '[skyeelliott.com] ' + subject,
+        _replyto:  email,        // recipient can hit reply and answer the sender directly
+        _captcha:  false,        // skip captcha challenge step
+        _template: 'table'       // nicer formatted email layout
+      };
+
       try {
         const res = await fetch(endpoint, {
           method:  'POST',
           headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-          body:    JSON.stringify({
-            name, email, subject, message,
-            _subject: '[Skye Elliott — Windows] ' + subject
-          })
+          body:    JSON.stringify(payload)
         });
-        const data = await res.json();
 
-        if (res.ok && (data.success === 'true' || data.success === true)) {
+        let data = {};
+        try { data = await res.json(); } catch (_) { /* non-JSON body */ }
+
+        const ok = data.success === true || data.success === 'true';
+        const needsActivation =
+          data.message && /confirm|activate|verify/i.test(data.message);
+
+        if (res.ok && ok) {
           setStatus('Your message has been received. Thank you for writing.', 'success');
           form.reset();
+        } else if (needsActivation) {
+          // First submission ever — recipient must confirm the relay once
+          setStatus(
+            'Message queued. The recipient needs to confirm this address one time — ' +
+            'your message will arrive once they do.',
+            'success'
+          );
+          form.reset();
         } else {
-          // FormSubmit returns a "you need to confirm" message on first send
-          const msg = (data && data.message) ? data.message : 'Could not send. Please try again later.';
+          const msg = (data && data.message)
+            ? data.message
+            : 'Could not send right now. Please try again in a moment.';
           setStatus(msg, 'error');
         }
       } catch (err) {
