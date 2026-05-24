@@ -1004,10 +1004,20 @@
         padding: 2rem;
         gap: 1.5rem;
         border-bottom: 1px solid var(--hairline);
-        transform: translateY(-110%);
-        transition: transform 0.4s ease;
+        /* -110% wasn't enough — could leave the drawer's bottom edge inside the nav.
+           This guarantees the bottom is at least 80px ABOVE the viewport top. */
+        transform: translateY(calc(-100% - 80px));
+        transition: transform 0.4s ease, visibility 0s linear 0.4s;
+        z-index: 99;              /* sits below the nav bar (z-index 100) */
+        pointer-events: none;     /* hidden drawer can't intercept clicks */
+        visibility: hidden;       /* also removes from tab focus / AT */
       }
-      .nav.open .nav__links { transform: translateY(0); }
+      .nav.open .nav__links {
+        transform: translateY(0);
+        pointer-events: auto;
+        visibility: visible;
+        transition: transform 0.4s ease, visibility 0s linear 0s;
+      }
       .nav__burger { display: flex; }
 
       .hero, .book-hero, .contact {
@@ -1042,7 +1052,8 @@
       .theme-toggle__knob { width: 18px; height: 18px; top: 2px; left: 2px; }
       :root[data-theme="light"] .theme-toggle__knob { transform: translateX(22px); }
       .nav__burger { width: 40px; height: 40px; }
-      .nav__links { top: 60px; }
+      .nav__links { top: 60px; transform: translateY(calc(-100% - 70px)); }
+      .nav.open .nav__links { transform: translateY(0); }
       main { padding-top: 60px; }
 
       .hero { padding: 2rem 1.2rem; }
@@ -1058,7 +1069,8 @@
       .theme-toggle__knob { width: 16px; height: 16px; }
       :root[data-theme="light"] .theme-toggle__knob { transform: translateX(18px); }
       .nav__burger { width: 36px; height: 36px; }
-      .nav__links { top: 56px; }
+      .nav__links { top: 56px; transform: translateY(calc(-100% - 66px)); }
+      .nav.open .nav__links { transform: translateY(0); }
       main { padding-top: 56px; }
     }
   </style>
