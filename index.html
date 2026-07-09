@@ -632,13 +632,39 @@
     }
 
     /* ============================================================
-       8. AUTHOR PAGE — single editorial column, no left motif
+       8. AUTHOR PAGE — single editorial column with framed portrait
        ============================================================ */
     .author {
       padding: clamp(4rem, 9vw, 8rem) 0;
       max-width: 760px;
       margin: 0 auto;
       text-align: center;
+    }
+    .author__portrait {
+      max-width: 280px;
+      margin: 0 auto 3rem;
+    }
+    .author__portrait .cover-frame {
+      padding: 12px;
+    }
+    .author__portrait img {
+      width: 100%;
+      aspect-ratio: 4/5;
+      object-fit: cover;
+      object-position: center top;
+      display: block;
+      filter: contrast(1.03) saturate(0.92);
+    }
+    /* Placeholder if the portrait fails to load */
+    .portrait-placeholder {
+      aspect-ratio: 4/5;
+      width: 100%;
+      background: linear-gradient(135deg, var(--bg-elev-2), var(--bg-frame));
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-size: 2.4rem;
+      color: var(--accent);
     }
     .author__header { margin-bottom: 3.5rem; }
     .author .section-label {
@@ -1142,7 +1168,7 @@
             <span class="cover-frame__corner br"></span>
             <!-- Real cover image with graceful fallback -->
             <img
-              src="https://raw.githubusercontent.com/artchill/skye-elliott/main/windows.jpg"
+              src="https://raw.githubusercontent.com/artchill/skye-elliott/main/windows-skye.jpg"
               alt="Windows by Skye Elliott — Book Cover"
               onerror="this.outerHTML='<div class=&quot;cover-placeholder&quot;><div class=&quot;cover-placeholder__title&quot;>Windows</div><div class=&quot;cover-placeholder__author&quot;>Skye Elliott</div></div>'"
             />
@@ -1235,7 +1261,7 @@
               <span class="cover-frame__corner bl"></span>
               <span class="cover-frame__corner br"></span>
               <img
-                src="https://raw.githubusercontent.com/artchill/skye-elliott/main/windows.jpg"
+                src="https://raw.githubusercontent.com/artchill/skye-elliott/main/windows-skye.jpg"
                 alt="Windows by Skye Elliott — Book Cover"
                 onerror="this.outerHTML='<div class=&quot;cover-placeholder&quot;><div class=&quot;cover-placeholder__title&quot;>Windows</div><div class=&quot;cover-placeholder__author&quot;>Skye Elliott</div></div>'"
               />
@@ -1270,9 +1296,9 @@
             <div class="purchase-block">
               <div class="purchase-block__label">Available Now</div>
               <div class="purchase-grid">
-                <a href="https://www.amazon.com/Windows-Skye-Elliott-ebook/dp/B0GMY8T5CY/ref=tmm_kin_swatch_0?_encoding=UTF8&dib_tag=se&dib=eyJ2IjoiMSJ9.NRmce2HnnIwt5etFAtLvkA.38tG7akYdq_nJbjRg4EYUMf01yEnUk0HZ63jIefiyMs&qid=1779224781&sr=1-1" target="_blank" rel="noopener noreferrer" class="btn btn--primary">Amazon Kindle</a>
+                <a href="https://www.amazon.com/Windows-Skye-Elliott-ebook/dp/B0H7FRH12K/ref=sr_1_1?dib=eyJ2IjoiMSJ9.7tQvzKkDl2xAc-0M17KMZA.Zv3fU6tXKQS8wXuaag9DRmSX7nOLBm4iz4tQcnF3ozM&dib_tag=se&keywords=9798256122997&qid=1783534723&s=digital-text&sr=1-1" target="_blank" rel="noopener noreferrer" class="btn btn--primary">Amazon Kindle</a>
                 <a href="https://www.amazon.com/Windows-Skye-Elliott/dp/1662432933/ref=tmm_pap_swatch_0?_encoding=UTF8&dib_tag=se&dib=eyJ2IjoiMSJ9.NRmce2HnnIwt5etFAtLvkA.38tG7akYdq_nJbjRg4EYUMf01yEnUk0HZ63jIefiyMs&qid=1779224781&sr=1-1" target="_blank" rel="noopener noreferrer" class="btn btn--primary">Amazon Paperback</a>
-                <a href="https://read.amazon.com/sample/B0GMY8T5CY?clientId=share" target="_blank" rel="noopener noreferrer" class="btn">Read Kindle Sample</a>
+                <a href="https://read.amazon.com/sample/B0H7FRH12K?clientId=share" target="_blank" rel="noopener noreferrer" class="btn">Read Kindle Sample</a>
               </div>
             </div>
           </div>
@@ -1344,6 +1370,20 @@
       <div class="container">
         <div class="author">
           <header class="author__header">
+            <!-- Author portrait — framed to match the book cover treatment -->
+            <div class="author__portrait">
+              <div class="cover-frame">
+                <span class="cover-frame__corner tr"></span>
+                <span class="cover-frame__corner bl"></span>
+                <span class="cover-frame__corner br"></span>
+                <img
+                  src="https://raw.githubusercontent.com/artchill/skye-elliott/main/Betty.jpeg"
+                  alt="Skye Elliott — Author Portrait"
+                  onerror="this.outerHTML='<div class=&quot;portrait-placeholder&quot;>S. E.</div>'"
+                />
+              </div>
+            </div>
+
             <div class="section-label">Meet the Author</div>
             <h1 class="author__name">Skye Elliott</h1>
             <div class="author__role">Novelist · Observer · Storyteller</div>
